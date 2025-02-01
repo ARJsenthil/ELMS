@@ -11,7 +11,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Dashboard from './components/dashboard/dashboard';
 import ChangePassword from './components/pages/common/changePassword/changePassword';
 
-
 const router = createBrowserRouter([
   {
     element: <App />,
@@ -31,7 +30,6 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
 
 const store = createStore( rootReducer, applyMiddleware(thunk) )
 const root = ReactDOM.createRoot(document.getElementById('root'));
