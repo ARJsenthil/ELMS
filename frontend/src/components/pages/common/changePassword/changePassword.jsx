@@ -2,7 +2,8 @@ import { Button, Stack, TextField } from "@mui/material"
 import axios from "axios";
 import { useRef, useState } from "react";
 import { AlertBox } from "../../../../utilities/alerts/alert";
-import { DatePicker } from "@mui/x-date-pickers";
+import { API } from "../../../../common/api";
+// import { DatePicker } from "@mui/x-date-pickers";
 
 const ChangePassword = (props) => {
 
@@ -11,36 +12,44 @@ const ChangePassword = (props) => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    
+
+    const [data, setData] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    })
     const [currentPasswordError, setCurrentPasswordError] = useState(false);
     const [currentPasswordMatchError, setCurrentPasswordMatchError] = useState(false);
     const [newPasswordError, setNewPasswordError] = useState(false);
     const [confirmPasswordError, setConfirmPasswordError] = useState(false);
     const [comparePasswordError, setComparePasswordError] = useState(false);
+
+    const [errors, setErrors] = useState({});
     const [alert, setAlert] = useState({ type: null, message: "", open: false });
     
-    const currentPasswordInputRef = useRef(null);
-    const newPasswordInputRef = useRef(null);
-    const confirmPasswordInputRef = useRef(null);
+    const inputRef = useRef({
+        currentPassword: null,
+        newPassword: null,
+        confirmPassword: null,
+    })
 
 
     const onchange = ({name, value}) => {
         if(name === 'currentPassword') {
-            setCurrentPasswordError(false);
-            setCurrentPassword(value);
+            setErrors({ ...errors, [name]: false });
+            setData({ ...data, [name]: value });
         }
         else if(name === 'newPassword') {
-            setNewPasswordError(false);
-            setNewPassword(value);
+            setErrors({ ...errors, [name]: false });
+            setData({ ...data, [name]: value });
         }
         else if(name === 'confirmPassword') {
-            setConfirmPasswordError(false);
-            setConfirmPassword(value);
-            if(newPassword !== value) {
-                setComparePasswordError(true);
+            setData({ ...data, [name]: value });
+            if(data.newPassword != value) {
+                setErrors({ ...errors, [name]: false, comparePassword: true });
             }
             else {
-                setComparePasswordError(false)
+                setErrors({ ...errors, [name]: false, comparePassword: false });
             }
         }
     }
@@ -49,50 +58,52 @@ const ChangePassword = (props) => {
 
         let valid = true;
         let focusField = null
-
-        if(!currentPassword) {
-            setCurrentPasswordError(true);
+        let newData = { ...data };
+        let checkErrors = {};
+        if(!newData.currentPassword) {
+            checkErrors['currentPassword'] = true;
             valid = false;
-            if(!focusField) focusField = currentPasswordInputRef;
+            if(!focusField) focusField = 'currentPassword';
         }
-        else if(currentPassword !== password) {
-            setCurrentPasswordMatchError(true);
-            setCurrentPassword('');
+        else if(newData.currentPassword !== password) {
+            checkErrors['currentPasswordMatch'] = true;
+            newData['currentPassword'] = '';
             valid = false;
-            if(!focusField) focusField = currentPasswordInputRef;
+            if(!focusField) focusField = 'currentPassword';
             setAlert({ type: "warning", message: "Incorrect Password", open: true });
         }
 
-
-        if(!newPassword) {
-            setNewPasswordError(true);
+        if(!newData.newPassword) {
+            checkErrors['newPassword'] = true;
             valid = false;
-            if(!focusField) focusField = newPasswordInputRef;
+            if(!focusField) focusField = 'newPassword';
         }
 
-
-        if(!confirmPassword) {
-            setConfirmPasswordError(true);
+        if(!newData.confirmPassword) {
+            checkErrors['confirmPassword'] = true;
             valid = false;
-            if(!focusField) focusField = confirmPasswordInputRef;
+            if(!focusField) focusField = 'confirmPassword';
         }
-        else if(comparePasswordError) {
+        else if(errors.comparePassword) {
+            checkErrors['comparePassword'] = true;
             valid = false;
-            if(!focusField) focusField = confirmPasswordInputRef;
+            if(!focusField) focusField = 'confirmPassword';
         }
+        
+        
         
         if(focusField) {
-            focusField.current.focus()
+            inputRef.current[focusField].focus()
             console.log(focusField)
         }
-        
-        const formdata = new FormData();
-        formdata.append('currentPassword', currentPassword)
-        formdata.append('newPassword', newPassword)
-        formdata.append('confirmPassword', confirmPassword)
+
+        setErrors({...checkErrors});
+        setData({...newData});
+
+
 
         if(valid) {
-            axios.post(`API.changePassword/${type}`, formdata)
+            axios.post(API.changePassword+`/${type}`, newData)
             .then((res) => {
                 setAlert({ type: "success", message: "Department Added", open: true });
                 
@@ -114,46 +125,41 @@ const ChangePassword = (props) => {
             { alert.open && <AlertBox alertType={alert.type} message={alert.message} onClose={handleAlertClose} /> }
             <Stack spacing={2}>
                 <TextField 
-                    error={currentPasswordError || currentPasswordMatchError}
+                    error={errors.currentPassword || errors.currentPasswordMatch}
                     id="outlined-basic"
                     type="password" 
                     name="currentPassword"
-                    value={currentPassword || ''} 
+                    value={data.currentPassword || ''} 
                     onChange={(e) => onchange(e.target)}
                     label="Current Password" 
-                    helperText={currentPasswordError && 'Department code is required'}
+                    helperText={errors.currentPassword && 'Department code is required'}
                     variant="outlined" 
-                    inputRef={currentPasswordInputRef}
+                    inputRef={(el) => inputRef.current.currentPassword = (el)}
                 />
                 <TextField 
-                    error={newPasswordError}
+                    error={errors.newPassword}
                     id="outlined-basic" 
                     type="password" 
                     onChange={(e) => onchange(e.target)}
                     name="newPassword"
-                    value={newPassword || ''} 
+                    value={data.newPassword || ''} 
                     label="New Password" 
-                    helperText={newPasswordError && 'Department code is required'}
+                    helperText={errors.newPassword && 'Department code is required'}
                     variant="outlined" 
-                    inputRef={newPasswordInputRef}
+                    inputRef={(el) => inputRef.current.newPassword = (el)}
                 />
                 <TextField 
-                    error={confirmPasswordError || comparePasswordError}
+                    error={errors.confirmPassword || errors.comparePassword}
                     id="outlined-basic" 
                     type="password" 
                     onChange={(e) => onchange(e.target)}
                     name="confirmPassword"
-                    value={confirmPassword || ''} 
+                    value={data.confirmPassword || ''} 
                     label="Confirm Password" 
-                    helperText={confirmPasswordError && 'Department code is required'}
+                    helperText={errors.confirmPassword && 'Department code is required'}
                     variant="outlined" 
-                    inputRef={confirmPasswordInputRef}
+                    inputRef={(el) => inputRef.current.confirmPassword = (el)}  
                 />
-                <DatePicker
-        label="Select a date"
-        onChange={(newValue) => console.log(newValue)}
-        renderInput={(params) => <TextField {...params} />}
-      />
 
                 <Button variant="contained" onClick={onsubmit}>Contained</Button>
             </Stack>

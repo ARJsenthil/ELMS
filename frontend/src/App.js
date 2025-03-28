@@ -4,26 +4,44 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import { NAVIGATION } from './components/shared/navigation';
 import { RoutesData } from './components/shared/routes';
-
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ContactSupportOutlined } from '@mui/icons-material';
 
 function useDemoRouter(initialPath) {
-  console.log('path'+initialPath)
-  const [pathname, setPathname] = React.useState(initialPath);
-
-  React.useEffect(() => {
-    setPathname(initialPath);
-  }, [initialPath]);
+  console.log(initialPath)
+  const [pathname, setPathname] = React.useState(() => {
+    const currentPath = window.location.pathname;
+    return currentPath === "/" ? initialPath : currentPath;
+  });
   
-  console.log('path'+pathname)
-  const router = React.useMemo(() => {
+  React.useEffect(() => {
+    if(initialPath === '/login') {
+      setPathname(initialPath);
+      if (window.location.pathname !== initialPath) {
+        window.history.replaceState({}, "", initialPath);
+      }
+    }
+    else {
+
+      
+      if (window.location.pathname !== pathname) {
+        window.history.replaceState({}, "", pathname);
+      }
+    }
+  }, [pathname, initialPath]);
+
+  // Navigate function to update path
+  const navigate = (path) => {
+    setPathname(path);
+  };
+
+  return React.useMemo(() => {
     return {
       pathname,
-      searchParams: new URLSearchParams(),
-      navigate: (path) => setPathname(String(path)),
+      searchParams: new URLSearchParams(window.location.search),
+      navigate,
     };
   }, [pathname]);
-
-  return router;
 }
 
 
@@ -31,7 +49,7 @@ export default function App(props) {
   const [session, setSession] = React.useState({
     user: {
       id: 'admin',
-      type: 'employee',
+      type: 'admin',
       name: 'Bharat Kashyap',
       password: 'Bharat Kashyap',
       email: 'bharatkashyap@outlook.com',
@@ -55,7 +73,6 @@ export default function App(props) {
       },
       signOut: () => {
         setSession(null);
-        // setRouter(useDemoRouter('/login'))
       },
     };
   }, []);
@@ -67,7 +84,6 @@ export default function App(props) {
   const NAVIGATION_DATA = !session ? NAVIGATION.login : ( session.user.type === 'admin' ?  NAVIGATION.admin :  NAVIGATION.employee );  
   // const router = useDemoRouter(`/${!session ? 'login' : ( session.user.type === 'admin' ?  'dashboard' :  'changePassword' )}`);
   // const [router, setRouter] = React.useState(useDemoRouter(`/${!session ? 'login' : ( session.user.type === 'admin' ?  'dashboard' :  'changePassword' )}`));
-  console.log(router)
   return (
     <AppProvider
       navigation={NAVIGATION_DATA}

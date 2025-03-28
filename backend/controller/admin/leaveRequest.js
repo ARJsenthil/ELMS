@@ -7,7 +7,7 @@ Router.post('/addLeave', async (req, res) => {
         const { from_date, to_date, leave_type, description, emp_code, leave_status } = req.body;
         await pool.query('insert into leave_request ( from_date, to_date, leave_type, description, emp_code, leave_status ) values ( ?, ?, ?, ?, ?, Pending)', [from_date, to_date, leave_type, description, emp_code, leave_status], (err, result) => {
             if(err) {
-                res.status(400).json({ status: 0, message: 'cant able to insert' });
+                res.status(400).json({ status: 0, message: 'Server Error' });
             }
             else {
                 res.status(200).json({ status: 1, message: 'Leave Request Sended Successfully' });
@@ -20,3 +20,5 @@ Router.post('/addLeave', async (req, res) => {
 })
 
 Router.get('/listLeave')
+
+module.export = Router;

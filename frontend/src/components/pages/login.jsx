@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from '@mui/material';
+import { Button, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, TextField } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import axios from 'axios';
@@ -100,6 +100,7 @@ const Login = (props) => {
             <h1>{alignment} Login</h1>
             { alert.open && <AlertBox alertType={alert.type} message={alert.message} onClose={handleAlertClose} /> }
 
+            <Stack spacing={3}>
             <TextField
                 error={usernameError}
                 id='outlined-error-helper-text'
@@ -139,6 +140,7 @@ const Login = (props) => {
             />
             {passwordError && <FormHelperText>Password is required</FormHelperText>}
             </FormControl>
+            </Stack>
             <Button onClick={onsubmit}>login</Button>
         </>
     )

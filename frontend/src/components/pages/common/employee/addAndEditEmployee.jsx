@@ -15,37 +15,30 @@ const AddAndEditEmployee = (props) => {
 
     console.log(props)
     const {model, user} = props;
-    console.log(model)
-    const [firstnameError, setFirstnameError] = useState(false);
-    const [lastnameError, setLastnameError] = useState(false);
-    const [mailIdError, setMailIdError] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
-    const [genderError, setGenderError] = useState(false);
-    const [DOBError, setDOBError] = useState(false);
-    const [deptNameError, setDeptNameError] = useState(false);
-    const [countryError, setCountryError] = useState(false);
-    const [cityTownError, setCityTownError] = useState(false);
-    const [addressError, setAddressError] = useState(false);
-    const [phNoError, setPhNoError] = useState(false);
+    const [errors, setErrors] = useState({
+        
+    });
     const [alert, setAlert] = useState({ type: null, message: "", open: false });
 
-    const firstnameInputRef = useRef(null);
-    const lastnameInputRef = useRef(null);
-    const mailIdInputRef = useRef(null);
-    const passwordInputRef = useRef(null);
-    const genderInputRef = useRef(null);
-    const DOBInputRef = useRef(null);
-    const deptNameInputRef = useRef(null);
-    const countryInputRef = useRef(null);
-    const cityTownInputRef = useRef(null);
-    const addressInputRef = useRef(null);
-    const phNoInputRef = useRef(null);
+    const inputRef = useRef({
+        firstname:null,
+        lastname:null,
+        mailId:null,
+        password:null,
+        gender:null,
+        DOB:null,
+        deptName:null,
+        country:null,
+        cityTown:null,
+        address:null,
+        phNo:null,
+    });
 
-    const emailregex = '/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g';
+    const emailregex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
     const passwordRegex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\>';
-    const phoneregex = '/(\+91[\s-]?)?[6-9]\d{9}\b/g';
+    const phoneregex = /(\+91[\s-]?)?[6-9]\d{9}\b/g;
     const unameregex = '^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])>';
-    const numberRegex = '/^\d*$/';
+    const numberRegex = /^\d*$/;
     const [loading, setLoading] = useState(true);
 
     const id = null;
@@ -59,54 +52,33 @@ const AddAndEditEmployee = (props) => {
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-
     const onchange = ({name, value}) => {
-        if(name === 'firstname') {
-            setFirstnameError(false);
-            handleInputChangeEmployee(name, value)(dispatch);
-        }
-        else if(name === 'lastname') {
-            setLastnameError(false);
-            handleInputChangeEmployee(name, value)(dispatch);
-        }
-        else if(name === 'mailId') {
-            setMailIdError(false);
-            handleInputChangeEmployee(name, value)(dispatch);
-        }
-        else if(name === 'password') {
-            setPasswordError(false);
-            handleInputChangeEmployee(name, value)(dispatch);
-        }
-        else if(name === 'gender') {
-            setGenderError(false);
-            handleInputChangeEmployee(name, value)(dispatch);
-        }
-        else if(name === 'DOB') {
-            setDOBError(false);
-            handleInputChangeEmployee(name, value)(dispatch);
-        }
-        else if(name === 'deptName') {
-            setDeptNameError(false);
-            handleInputChangeEmployee(name, value)(dispatch);
-        }
-        else if(name === 'country') {
-            setCountryError(false);
-            handleInputChangeEmployee(name, value)(dispatch);
-        }
-        else if(name === 'cityTown') {
-            setCityTownError(false);
-            handleInputChangeEmployee(name, value)(dispatch);
-        }
-        else if(name === 'address') {
-            setAddressError(false);
-            handleInputChangeEmployee(name, value)(dispatch);
-        }
-        else if(name === 'phNo') {
-            if(numberRegex.test) {
-                setPhNoError(false);
+        var checkfield = [ 'firstname', 'lastname', 'password', 'gender', 'DOB', 'deptName', 'country', 'cityTown', 'address' ]
+            if(checkfield.includes(name)) {
+                setErrors({ ...errors, [name]: false });
                 handleInputChangeEmployee(name, value)(dispatch);
             }
-        }
+            else if(name === 'mailId') {
+                handleInputChangeEmployee(name, value)(dispatch);
+                if(emailregex.test(value)) {
+                    setErrors({ ...errors, 'mailId': false });
+                }
+                else {
+                    setErrors({ ...errors, 'mailId': true });
+                }
+
+            }
+            else if(name === 'phNo') {
+                if(numberRegex.test(value) && value.length <= 10) {
+                    handleInputChangeEmployee(name, value)(dispatch);
+                    if(phoneregex.test(value)) {
+                        setErrors({ ...errors, 'phNo': false });
+                    }
+                    else {
+                        setErrors({ ...errors, 'phNo': true });
+                    }
+                }
+            }
     }
 
     const onsubmit = () => {
@@ -114,84 +86,22 @@ const AddAndEditEmployee = (props) => {
 
         let valid = true;
         let focusField = null
-
-        if(!newData.firstname) {
-            setFirstnameError(true);
-            valid = false;
-            if(!focusField) focusField = firstnameInputRef;
-        }
-
-
-        if(!newData.lastname) {
-            setLastnameError(true);
-            valid = false;
-            if(!focusField) focusField = lastnameInputRef;
-        }
-
-
-        if(!newData.mailId) {
-            setMailIdError(true);
-            valid = false;
-            if(!focusField) focusField = mailIdInputRef;
-        }
-
-        if(!newData.password) {
-            setPasswordError(true);
-            valid = false;
-            if(!focusField) focusField = passwordInputRef;
-        }
-
-
-        if(!newData.gender) {
-            setGenderError(true);
-            valid = false;
-            if(!focusField) focusField = genderInputRef;
-        }
-
-
-        if(!newData.DOB) {
-            setDOBError(true);
-            valid = false;
-            if(!focusField) focusField = DOBInputRef;
-        }
-
-        if(!newData.deptName) {
-            setDeptNameError(true);
-            valid = false;
-            if(!focusField) focusField = deptNameInputRef;
-        }
-
-
-        if(!newData.country) {
-            setCountryError(true);
-            valid = false;
-            if(!focusField) focusField = countryInputRef;
-        }
-
-
-        if(!newData.cityTown) {
-            setCityTownError(true);
-            valid = false;
-            if(!focusField) focusField = cityTownInputRef;
-        }
-
-
-        if(!newData.address) {
-            setAddressError(true);
-            valid = false;
-            if(!focusField) focusField = addressInputRef;
-        }
-
-        if(!newData.phNo) {
-            setPhNoError(true);
-            valid = false;
-            if(!focusField) focusField = phNoInputRef;
-        }
+        var checkfield = [ 'firstname', 'lastname', 'mailId', 'password', 'gender', 'DOB', 'deptName', 'country', 'cityTown', 'address', 'phNo' ]
+        var checkfield = [ 'firstname', 'lastname', 'mailId', 'gender', 'DOB', 'country', 'cityTown', 'address', 'phNo' ]
+        var checkError = {};
+        checkfield.forEach(name => {
+            if(!newData[name]) {
+                checkError[name] = { ...checkError, [name]: false };
+                valid = false;
+                if(!focusField) focusField = name;
+            }            
+        });
         
         if(focusField) {
-            focusField.current.focus()
+            inputRef.current[focusField].focus();
             console.log(focusField)
         }
+        setErrors({ ...checkError })
         
         const formdata = new FormData();
         // newData.forEach(element => {
@@ -199,9 +109,9 @@ const AddAndEditEmployee = (props) => {
         // });
 
         if(valid) {
-            const axiosCall = model === 'add' 
-                ? axios.post(API.addEmployee, formdata) 
-                : axios.post(API.editEmployee, formdata);
+            const axiosCall = model === 'add' ?
+            axios.post(API.addEmployee, formdata) 
+            : axios.post(API.editEmployee, formdata);
 
             axiosCall
             .then((res) => {
@@ -223,37 +133,37 @@ const AddAndEditEmployee = (props) => {
         { alert.open && <AlertBox alertType={alert.type} message={alert.message} onClose={handleAlertClose} /> }
             <Stack spacing={3}>
             <TextField
-                error={firstnameError}
+                error={errors.firstname}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Firstname"
                 value={data.firstname || ''}
                 name="firstname"
-                helperText={firstnameError && 'Firstname is required'}
-                inputRef={firstnameInputRef}
+                helperText={errors.firstname && 'Firstname is required'}
+                inputRef={(el) => inputRef.current.firstname = el}
             />
             <TextField
-                error={lastnameError}
+                error={errors.lastname}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Lastname"
                 value={data.lastname || ''}
                 name="lastname"
-                helperText={lastnameError && 'Lastname is required'}
-                inputRef={lastnameInputRef}
+                helperText={errors.lastname && 'Lastname is required'}
+                inputRef={(el) => inputRef.current.lastname = el}
             />          
             <TextField
-                error={mailIdError}
+                error={errors.mailId}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Mail ID"
                 value={data.mailId || ''}
                 type="mail"
                 name="mailId"
-                helperText={mailIdError && 'Mail ID is required'}
-                inputRef={mailIdInputRef}
+                helperText={errors.mailId && 'Mail ID is required / Invalid Mail id'}
+                inputRef={(el) => inputRef.current.mailId = el}
             />
-            {user.type === 'admin' && <FormControl sx={{ m: 1}} variant="outlined" error={passwordError}>
+            {user.type === 'admin' && <FormControl sx={{ m: 1}} variant="outlined" error={errors.password}>
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
             <OutlinedInput
                 id="outlined-adornment-password"
@@ -261,7 +171,7 @@ const AddAndEditEmployee = (props) => {
                 value={data.password || ''}
                 onChange={(e) => onchange(e.target)}
                 name="password"
-                inputRef={passwordInputRef}
+                inputRef={(el) => inputRef.current.password = el}
                 label="Password"
                 endAdornment={
                 <InputAdornment position="end">
@@ -275,25 +185,25 @@ const AddAndEditEmployee = (props) => {
                 </InputAdornment>
                 }
             />
-            {passwordError && <FormHelperText>Password is required</FormHelperText>}
+            {errors.password && <FormHelperText>Password is required</FormHelperText>}
             </FormControl>}
             <TextField
-                error={genderError}
+                error={errors.gender}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Gender"
                 select
                 value={data.gender || ''}
                 name="gender"
-                helperText={genderError && 'Employee name is required'}
-                inputRef={genderInputRef}
+                helperText={errors.gender && 'Employee name is required'}
+                inputRef={(el) => inputRef.current.gender = el}
             >
                 <MenuItem key="male" value="male">Male</MenuItem>
                 <MenuItem key="female" value="female">Female</MenuItem>
                 <MenuItem key="other" value="other">Other</MenuItem>
             </TextField>  
             <TextField
-                error={DOBError}
+                error={errors.DOB}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="DOB"
@@ -301,19 +211,19 @@ const AddAndEditEmployee = (props) => {
                 value={data.DOB || ''}
                 name="DOB"
                 defaultValue=" "
-                helperText={DOBError && 'DOB is required'}
-                inputRef={DOBInputRef}
+                helperText={errors.DOB && 'DOB is required'}
+                inputRef={(el) => inputRef.current.DOB = el}
             />
             {user.type === 'admin' && <TextField
-                error={deptNameError}
+                error={errors.deptName}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Department name"
                 select
                 value={data.deptName || ''}
                 name="deptName"
-                helperText={deptNameError && 'Department name is required'}
-                inputRef={deptNameInputRef}
+                helperText={errors.deptName && 'Department name is required'}
+                inputRef={(el) => inputRef.current.deptName = el}
             >
                 {(storeData.department.listDepartment).map((option) => (
                     <MenuItem key={option.deptCode} value={option.deptCode}>
@@ -322,27 +232,27 @@ const AddAndEditEmployee = (props) => {
                 ))}
             </TextField>}
             <TextField
-                error={countryError}
+                error={errors.country}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Country"
                 value={data.country || ''}
                 name="country"
-                helperText={countryError && 'Country is required'}
-                inputRef={countryInputRef}
+                helperText={errors.country && 'Country is required'}
+                inputRef={(el) => inputRef.current.country = el}
             />          
             <TextField
-                error={cityTownError}
+                error={errors.cityTown}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="City/Town"
                 value={data.cityTown || ''}
                 name="cityTown"
-                helperText={cityTownError && 'City/Town is required'}
-                inputRef={cityTownInputRef}
+                helperText={errors.cityTown && 'City/Town is required'}
+                inputRef={(el) => inputRef.current.cityTown = el}
             />
             <TextField
-                error={addressError}
+                error={errors.address}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Address"
@@ -350,11 +260,11 @@ const AddAndEditEmployee = (props) => {
                 rows={4}
                 value={data.address || ''}
                 name="address"
-                helperText={addressError && 'Address is required'}
-                inputRef={addressInputRef}
+                helperText={errors.address && 'Address is required'}
+                inputRef={(el) => inputRef.current.address = el}
             />
             <TextField
-                error={phNoError}
+                error={errors.phNo}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Phone Number"
@@ -365,8 +275,8 @@ const AddAndEditEmployee = (props) => {
                     startAdornment: <InputAdornment position="start">+91</InputAdornment>,
                     },
                 }}
-                helperText={phNoError && 'Phone Number is required'}
-                inputRef={phNoInputRef}
+                helperText={errors.phNo && 'Phone Number is required'}
+                inputRef={(el) => inputRef.current.phNo = el}
             />
             <Button onClick={onsubmit}>{model} Employee</Button>
             </Stack>
