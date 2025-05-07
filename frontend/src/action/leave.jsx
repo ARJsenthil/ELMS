@@ -45,3 +45,8 @@ export const handleInputChangeLeave = (name, value) => {
         dispatch({ type: 'HANDLE_INPUT_CHANGE_LEAVE', name: name, value: value })
     }
 }
+export const resetLeave = (name, value) => {
+    return function (dispatch) {
+        dispatch({ type: 'RESET_LEAVE' })
+    }
+}

@@ -1,67 +1,91 @@
-const { Router } = require("express");
+const Router = require("express").Router();
 const { pool } = require("../../config/db");
 
-
-Router.post('/addDepartment', async (req, res) => {
-    try {
-        const { dept_code, dept_name, dept_short_name } = req.body;
-        await pool.query('insert into department ( dept_code, dept_name, dept_short_name ) values ( ?, ?, ? )', [ dept_code, dept_name, dept_short_name ], (err, result) => {
-            if(err) {
-                res.status(400).json({ status: 0, message: 'Server Error', error: err });
-            }
-            else {
-                res.status(200).json({ status: 1, message: 'Leave Request Sended Successfully' });
-            }
-        })
-    } catch (err) {
-        res.status(500).json({ status: 0, message: 'Server Issue', error: err });
+class Department {
+    async create(req, res) {
+        try {
+            
+            const { dept_code, dept_name, dept_short_name } = req.body;
+            pool.query('insert into department ( dept_code, dept_name, dept_short_name ) values ( ?, ?, ? )', [ dept_code, dept_name, dept_short_name ], (err, result) => {
+                if(err) {
+                    if(err.sqlState === '23000') {
+                        return res.status(409).json({ status: 0, message: 'Duplicate Entry', error: err });
+                    }
+                    else {
+                        return res.status(409).json({ status: 0, message: 'Server Error', error: err });
+                    }
+                }
+                else {
+                    return res.status(200).json({ status: 1, message: 'Department Added Successfully' });
+                }
+            })
+        } catch (err) {
+            return res.status(500).json({ status: 0, message: 'Server Issue', error: err });
+        }
     }
-})
 
-Router.get('/listDepartment', async (req, res) => {
-    try {
-        await pool.query('select * from department', async (err, res) => {
-            if(err) {
-                res.status(400).json({ status: 0, message: 'server error', error: err });
-            }
-            else {
-                res.status(200).json({ status: 1, message: 'Departments retrived successfully', data: res });
-            }
-        })
-    } catch (err) {
-        res.status(500).json({ status: 0, message: 'server error', error: err });
+    async getAll(req, res) {
+        try {
+            pool.query('select * from department', async (err, result) => {
+               if(err) {
+                   return res.status(400).json({ status: 0, message: 'server error', error: err });
+               }
+               else {
+                   return res.status(200).json({ status: 1, message: 'Departments retrived successfully', data: result });
+               }
+           })
+       } catch (err) {
+           return res.status(500).json({ status: 0, message: 'server error', error: err });
+       }
     }
-})
 
-Router.get('/viewDepartment/:id', async (req, res) => {
-    try {
-        const { id } = req.query;
-        await pool.query('select * from department where id=?', id, (err, res) => {
-            if(err) {
-                res.status(400).json({ status: 0, message: 'server error', error: err });
-            }
-            else {
-                res.status(200).json({ status: 0, message: 'server error', data: res });
-            }
-        })
-    } catch (err) {
-        res.status(500).json({ status: 0, message: 'server error' });
+    async getById(req, res) {
+        try {
+            const { id } = req.params;
+             pool.query('select * from department where id=?', [id], (err, result) => {
+                if(err) {
+                    return res.status(400).json({ status: 0, message: 'server error', error: err });
+                }
+                else {
+                    return res.status(200).json({ status: 0, message: 'server error', data: result[0] });
+                }
+            })
+        } catch (err) {
+            return res.status(500).json({ status: 0, message: 'server error' });
+        }
     }
-})
 
-Router.put('/updateDepartment/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { dept_code, dept_name, dept_short_name } = req.body;
-        await pool.query('update table department dept_code = ? , dept_name = ? , dept_short_name = ? where _id = ? ', [ dept_code, dept_name, dept_short_name, id ], (err, result) => {
-            if(err) {
-                res.status(400).json({ status: 0, message: 'Server Error', error: err });
-            }
-            else {
-                res.status(200).json({ status: 1, message: 'Leave Request Sended Successfully' });
-            }
-        })
-    } catch (err) {
-        res.status(500).json({ status: 0, message: 'Server Issue', error: err });
+    async update(req, res) {
+        try {
+            const { id } = req.params;
+            const { dept_code, dept_name, dept_short_name } = req.body;
+            const duplicateCheck = pool.query("select * from department where id != ? and dept_code = ?", [id, dept_code], (err, result) => {
+                if(err) {
+            console.log(err)
+            return false;
+                }
+                else {
+            console.log(result)
+        }
+            });
+            // console.log(duplicateCheck)
+            pool.query('update department set dept_code = ? , dept_name = ? , dept_short_name = ? where id = ? ', [ dept_code, dept_name, dept_short_name, id ], (err, result) => {
+                if(err) {
+                    if(err.sqlState === '23000') {
+                        return res.status(409).json({ status: 0, message: 'Duplicate Entry', error: err });
+                    }
+                    else {
+                        return res.status(409).json({ status: 0, message: 'Server Error', error: err });
+                    }
+                }
+                else {
+                    return res.status(200).json({ status: 1, message: 'Department Updated Successfully' });
+                }
+            })
+        } catch (err) {
+            return res.status(500).json({ status: 0, message: 'Server Issue', error: err });
+        }
     }
-})
+}
+
+module.exports = new Department;

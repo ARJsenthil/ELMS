@@ -9,7 +9,7 @@ import { useRef, useState } from 'react';
 
 const Login = (props) => {
 
-    const [alignment, setAlignment] = useState('Admin');
+    const [alignment, setAlignment] = useState('admin');
     const handleChange = (event, newAlignment) => {
       setAlignment(newAlignment);
     };
@@ -62,10 +62,10 @@ const Login = (props) => {
             console.log(focusField)
         }
         
-        const formdata = new FormData();
-        formdata.append('username', username);
-        formdata.append('password', password);
-        formdata.append('type', alignment);
+        const formdata = {};
+        formdata['username'] = username;
+        formdata['password'] = password;
+        formdata['type'] = alignment;
 
         if(valid) {
             const axiosCall = axios.post(API.login, formdata);
@@ -93,8 +93,8 @@ const Login = (props) => {
             onChange={handleChange}
             aria-label="Platform"
         >
-            <ToggleButton value="Admin">Admin</ToggleButton>
-            <ToggleButton value="Employee">Employee</ToggleButton>
+            <ToggleButton value="admin">Admin</ToggleButton>
+            <ToggleButton value="employee">Employee</ToggleButton>
         </ToggleButtonGroup>
 
             <h1>{alignment} Login</h1>

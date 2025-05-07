@@ -1,9 +1,11 @@
 
-const ROOTURL = 'https://localhost:4000/apt/v1'
+const ROOTURL = 'http://localhost:4000/api/v1';
 
 
 export const API = {
 
+    login: ROOTURL + '/auth/login',
+    
     totalEmployee: ROOTURL + '/employee/totalEmployee',
     totalDepartment: ROOTURL + '/department/totalDepartment',
     totalLeaveType: ROOTURL + '/leaveType/totalLeaveType',
@@ -15,16 +17,16 @@ export const API = {
     viewEmployee: ROOTURL + '/employee/viewEmployee',
 
     // Department
-    listDepartment: ROOTURL + '/department/listDepartment',
-    addDepartment: ROOTURL + '/department/addDepartment',
-    editDepartment: ROOTURL + '/department/editDepartment',
-    viewDepartment: ROOTURL + '/department/viewDepartment',
+    listDepartment: ROOTURL + '/department/',
+    addDepartment: ROOTURL + '/department/',
+    editDepartment: ROOTURL + '/department/',
+    viewDepartment: ROOTURL + '/department/',
 
     // LeaveType
-    listLeaveType: ROOTURL + '/leaveType/listLeaveType',
-    addLeaveType: ROOTURL + '/leaveType/addLeaveType',
-    editLeaveType: ROOTURL + '/leaveType/editLeaveType',
-    viewLeaveType: ROOTURL + '/leaveType/viewLeaveType',
+    listLeaveType: ROOTURL + '/leaveType/',
+    addLeaveType: ROOTURL + '/leaveType/',
+    editLeaveType: ROOTURL + '/leaveType/',
+    viewLeaveType: ROOTURL + '/leaveType/',
 
     // Leave
     listLeave: ROOTURL + '/leave/listLeave',
@@ -34,5 +36,5 @@ export const API = {
     viewLeave: ROOTURL + '/leave/viewLeave',
 
 
-    deleteItem: ROOTURL + '/deleteItem'
+    deleteItem: ROOTURL + '/delete/deleteData',
 }

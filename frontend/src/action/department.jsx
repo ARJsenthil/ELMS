@@ -19,6 +19,7 @@ export function viewDepartment (id = '') {
         axios.get(API.viewDepartment + '/' + id)
         .then((res) => {
             const { data, total } = res.data? res.data : {};
+            console.log(data);
             dispatch({ type: 'VIEW_DEPARTMENT', payload: data ? data : [], total: total ? total : 0 })
         })
         .catch((err) => {
@@ -30,5 +31,10 @@ export function viewDepartment (id = '') {
 export function handleInputChangeDepartment (name, value) {
     return function (dispatch) {
         dispatch({ type: 'HANDLE_INPUT_CHANGE_DEPARTMENT', name: name, value: value })
+    }
+}
+export function resetDepartment () {
+    return function (dispatch) {
+        dispatch({ type: 'RESET_DEPARTMENT' })
     }
 }

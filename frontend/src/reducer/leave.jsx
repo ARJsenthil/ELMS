@@ -33,6 +33,12 @@ const leaveReducer = ( state = initialState, action ) => {
                 }
             }
             
+        case 'RESET_LEAVE':
+            return {
+                ...state,
+                leave: {}
+            }
+            
         default:
             return state;
     }

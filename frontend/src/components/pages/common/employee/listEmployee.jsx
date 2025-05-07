@@ -14,8 +14,10 @@ import { AlertBox } from "../../../../utilities/alerts/alert";
 import { API } from "../../../../common/api";
 import axios from "axios";
 
-export default function ListEmployee() {
-    const columns = [
+export default function ListEmployee(props) {
+  console.log(props);
+  const { router } = props;
+  const columns = [
   { id: 'id', label: 'ID', minWidth: 30 },
   { id: 'name', label: 'Name', minWidth: 100 },
   {
@@ -43,7 +45,7 @@ const data = storeData.listEmployee;
 
 React.useEffect(() => {
   fetchData(dispatch);
-}, [dispatch, data])
+}, [dispatch])
 
 const fetchData = (dispatch) => {
   listEmployee()(dispatch);
@@ -72,8 +74,8 @@ const rows = data.map(element =>
         element.deptName, 
         element.phNo, 
         <>
-            <Link to={`/employee/editEmployee/${element.id}`}>edit</Link> 
-            <Button onClick={() => deleteData(element.id)}>Delete</Button>
+            <Button onClick={() => {router.navigate(`/employee/editEmployee/${element.id}`);router.pathname('/editemployee')}}>Edit</Button> 
+            {/* <Button onClick={() => deleteData(element.id)}>Delete</Button> */}
         </>
     )
 );

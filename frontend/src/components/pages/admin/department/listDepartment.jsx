@@ -14,12 +14,13 @@ import { AlertBox } from "../../../../utilities/alerts/alert";
 import { API } from "../../../../common/api";
 import axios from "axios";
 
-export default function ListDepartment() {
-    const columns = [
+export default function ListDepartment( props ) {
+  const { router } = props;
+  const columns = [
   { id: 'id', label: 'ID', minWidth: 50 },
-  { id: 'deptCode', label: 'Dept Code', minWidth: 100 },
+  { id: 'dept_code', label: 'Dept Code', minWidth: 100 },
   {
-    id: 'deptName',
+    id: 'dept_name',
     label: 'Dept Name',
     minWidth: 170,
   },
@@ -33,25 +34,32 @@ export default function ListDepartment() {
 const dispatch = useDispatch();
 const [alert, setAlert] = React.useState({ type: null, message: "", open: false });
 
-const storeData = useSelector( state => state.employee );
-const data = storeData.listEmployee;
+const storeData = useSelector( state => state.department );
+const data = storeData.listDepartment;
 
 React.useEffect(() => {
   fetchData(dispatch);
-}, [dispatch, data])
+}, [dispatch])
 
 const fetchData = (dispatch) => {
   listDepartment()(dispatch);
+  // router.navigate('/dashboard');
 }
 
-function createData(id, deptCode, deptName, action) {
-  return { id, deptCode, deptName, action };
+function createData(id, dept_code, dept_name, action) {
+  return { id, dept_code, dept_name, action };
 }
 
+const editData = (itemID) => {
+  router.navigate(`/department/editDepartment?id=${itemID}`);
+}
 const deleteData = (itemID) => {
-  axios.delete(`${API.deleteItem}/${itemID}`)
+  // alert(itemID)
+  axios.delete(`${API.deleteItem}/${itemID}`, {
+    data: { model: 'department' }
+  })  
   .then((res) => {
-    setAlert({ type: "success", message: "Leave Type Added", open: true });
+    setAlert({ type: "success", message: res.data.message, open: true });
     fetchData(dispatch);
   })
   .catch((err) => {
@@ -63,15 +71,14 @@ const deleteData = (itemID) => {
 const rows = data.map(element => 
     createData(
         element.id, 
-        element.deptCode, 
-        element.deptShortName, 
+        element.dept_code, 
+        element.dept_name, 
         <>
-            <Link to={`/department/editDepartment/${element.id}`}>edit</Link> 
-            <Button onClick={() => deleteData(element.id)}>Delete</Button>
+            <Button onClick={() => editData(element.id)}>Edit</Button> 
+            {/* <Button onClick={() => deleteData(element.id)}>Delete</Button> */}
         </>
     )
 );
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 

@@ -32,8 +32,8 @@ app.get('/',async function (req, res) {
 
 app.use(cors());
 
-// require('./routes/index')(app);
+require('./routes')(app);
 
-app.listen(5000, 'localhost', () => {
+app.listen(4000, 'localhost', () => {
     console.log('Server ON')
 })

@@ -7,13 +7,14 @@ const initialState = {
 
 const leaveTypeReducer = ( state = initialState, action ) => {
     switch (action.type) {
-        case 'LIST_LEAVETYPE':
+        case 'LIST_LEAVE_TYPE':
+            console.log(action)
             return {
                 ...state,
                 listLeaveType: action.payload,
                 total: action.total,
             }
-        case 'VIEW_LEAVETYPE':
+        case 'VIEW_LEAVE_TYPE':
             return {
                 ...state,
                 leaveType: action.payload,
@@ -27,6 +28,11 @@ const leaveTypeReducer = ( state = initialState, action ) => {
                     [action.name]: action.value,
                 }
             }
+            case 'RESET_LEAVE_TYPE':
+                return {
+                    ...state,
+                    leaveType: {}
+                }
             
         default:
             return state;

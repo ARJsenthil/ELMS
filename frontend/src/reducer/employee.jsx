@@ -26,6 +26,12 @@ const employeeReducer = ( state = initialState, action ) => {
                     [action.name]: action.value,
                 }
             }
+            case 'RESET_EMPLOYEE':
+                return {
+                    ...state,
+                    employee: {}
+                }
+    
             
         default:
             return state;

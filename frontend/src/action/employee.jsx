@@ -32,3 +32,8 @@ export const handleInputChangeEmployee = (name, value) => {
         dispatch({ type: 'HANDLE_INPUT_CHANGE_EMPLOYEE', name: name, value: value })
     }
 }
+export const resetEmployee = () => {
+    return function (dispatch) {
+        dispatch({ type: 'RESET_EMPLOYEE' })
+    }
+}

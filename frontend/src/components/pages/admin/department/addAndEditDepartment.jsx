@@ -1,18 +1,19 @@
-
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { API } from "../../../../common/api";
-import { handleInputChangeDepartment, viewDepartment } from "../../../../action/department";
+import { handleInputChangeDepartment, resetDepartment, viewDepartment } from "../../../../action/department";
 import { AlertBox } from "../../../../utilities/alerts/alert";
 import { Button, Stack, TextField } from "@mui/material";
+import { useParams } from "react-router-dom";
 
 const AddAndEditDepartment = (props) => {
-
+    const { router } = props;    
     const dispatch = useDispatch();
     const storeData = useSelector( state => state.department );
     const data = storeData.department;
-    const [model, setModel] = useState('add');
+    console.log(data);
+    const { model } = props;
     const [deptCodeError, setDeptCodeError] = useState(false);
     const [deptNameError, setDeptNameError] = useState(false);
     const [deptShortNameError, setDeptShortNameError] = useState(false);
@@ -21,23 +22,27 @@ const AddAndEditDepartment = (props) => {
     const deptCodeInputRef = useRef(null);
     const deptNameInputRef = useRef(null);
     const deptShortNameInputRef = useRef(null);
-    const id = null;
+    const id = router.searchParams.get('id');
     useEffect(() => {
         if(model === 'edit') {
-            viewDepartment()(dispatch);            
+            viewDepartment(id)(dispatch);
+        }
+        else {
+            resetDepartment()(dispatch);            
         }
     }, [dispatch])
+    console.log(id);
 
     const onchange = ({name, value}) => {
-        if(name === 'deptCode') {
+        if(name === 'dept_code') {
             setDeptCodeError(false);
             handleInputChangeDepartment(name, value)(dispatch);
         }
-        else if(name === 'deptName') {
+        else if(name === 'dept_name') {
             setDeptNameError(false);
             handleInputChangeDepartment(name, value)(dispatch);
         }
-        else if(name === 'deptShortName') {
+        else if(name === 'dept_short_name') {
             setDeptShortNameError(false);
             handleInputChangeDepartment(name, value)(dispatch);
         }
@@ -49,21 +54,21 @@ const AddAndEditDepartment = (props) => {
         let valid = true;
         let focusField = null
 
-        if(!newData.deptCode) {
+        if(!newData.dept_code) {
             setDeptCodeError(true);
             valid = false;
             if(!focusField) focusField = deptCodeInputRef;
         }
 
 
-        if(!newData.deptName) {
+        if(!newData.dept_name) {
             setDeptNameError(true);
             valid = false;
             if(!focusField) focusField = deptNameInputRef;
         }
 
 
-        if(!newData.deptShortName) {
+        if(!newData.dept_short_name) {
             setDeptShortNameError(true);
             valid = false;
             if(!focusField) focusField = deptShortNameInputRef;
@@ -74,20 +79,21 @@ const AddAndEditDepartment = (props) => {
             console.log(focusField)
         }
         
-        const formdata = new FormData();
-
+        const tempData = [ {name: 'a'}, {name: 'a'}, {name: 'a'} ];
         if(valid) {
             const axiosCall = model === 'add' 
-                ? axios.post(API.addDepartment, formdata) 
-                : axios.post(API.editDepartment, formdata);
+                ? axios.post(API.addDepartment, newData) 
+                : axios.put(API.editDepartment+'/'+id, newData);
 
             axiosCall
             .then((res) => {
-                setAlert({ type: "success", message: "Department Added", open: true });
+                var message = res.data.message;
+                setAlert({ type: "success", message: message, open: true });
                 
             })
             .catch((err) => {
-                setAlert({ type: "warning", message: "Try Again Later", open: true });
+                var message = err.response.data.message;
+                setAlert({ type: "warning", message: message, open: true });
 
             })
         }
@@ -105,8 +111,8 @@ const AddAndEditDepartment = (props) => {
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Department Code"
-                defaultValue={data.deptCode || ''}
-                name="deptCode"
+                value={data.dept_code || ''}
+                name="dept_code"
                 helperText={deptCodeError && 'Department code is required'}
                 inputRef={deptCodeInputRef}
             />
@@ -115,8 +121,8 @@ const AddAndEditDepartment = (props) => {
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Department Name"
-                defaultValue={data.deptName || ''}
-                name="deptName"
+                value={data.dept_name || ''}
+                name="dept_name"
                 helperText={deptNameError && 'Department name is required'}
                 inputRef={deptNameInputRef}
             />          
@@ -125,8 +131,8 @@ const AddAndEditDepartment = (props) => {
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Department Short Name"
-                defaultValue={data.deptShortName || ''}
-                name="deptShortName"
+                value={data.dept_short_name || ''}
+                name="dept_short_name"
                 helperText={deptShortNameError && 'Department short name is required'}
                 inputRef={deptShortNameInputRef}
             />

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { API } from "../../../../common/api";
-import { handleInputChangeEmployee, viewEmployee } from "../../../../action/employee";
+import { handleInputChangeEmployee, resetEmployee, viewEmployee } from "../../../../action/employee";
 import { AlertBox } from "../../../../utilities/alerts/alert";
 import { Button, FormControl, FormHelperText, IconButton, Input, InputAdornment, InputLabel, MenuItem, OutlinedInput, Stack, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -47,6 +47,9 @@ const AddAndEditEmployee = (props) => {
         if(model === 'edit') {
             viewEmployee(id)(dispatch);            
         }
+        else {
+            resetEmployee()(dispatch);
+        }
     }, [dispatch])
 
     const [showPassword, setShowPassword] = useState(false);
@@ -86,8 +89,13 @@ const AddAndEditEmployee = (props) => {
 
         let valid = true;
         let focusField = null
-        var checkfield = [ 'firstname', 'lastname', 'mailId', 'password', 'gender', 'DOB', 'deptName', 'country', 'cityTown', 'address', 'phNo' ]
-        var checkfield = [ 'firstname', 'lastname', 'mailId', 'gender', 'DOB', 'country', 'cityTown', 'address', 'phNo' ]
+        var checkfield = [];
+        if(model === 'edit') {
+            checkfield = [ 'firstname', 'lastname', 'mailId', 'gender', 'DOB', 'country', 'cityTown', 'address', 'phNo' ]
+        }
+        else {
+            checkfield = [ 'firstname', 'lastname', 'mailId', 'password', 'gender', 'DOB', 'deptName', 'country', 'cityTown', 'address', 'phNo' ]
+        }
         var checkError = {};
         checkfield.forEach(name => {
             if(!newData[name]) {
@@ -110,8 +118,8 @@ const AddAndEditEmployee = (props) => {
 
         if(valid) {
             const axiosCall = model === 'add' ?
-            axios.post(API.addEmployee, formdata) 
-            : axios.post(API.editEmployee, formdata);
+            axios.post(API.addEmployee, newData) 
+            : axios.post(API.editEmployee, newData);
 
             axiosCall
             .then((res) => {
@@ -130,7 +138,7 @@ const AddAndEditEmployee = (props) => {
 
     return(
         <>
-        { alert.open && <AlertBox alertType={alert.type} message={alert.message} onClose={handleAlertClose} /> }
+        { alert.open && <div id='alert'><AlertBox alertType={alert.type} message={alert.message} onClose={handleAlertClose} /></div> }
             <Stack spacing={3}>
             <TextField
                 error={errors.firstname}
@@ -163,7 +171,7 @@ const AddAndEditEmployee = (props) => {
                 helperText={errors.mailId && 'Mail ID is required / Invalid Mail id'}
                 inputRef={(el) => inputRef.current.mailId = el}
             />
-            {user.type === 'admin' && <FormControl sx={{ m: 1}} variant="outlined" error={errors.password}>
+            {user === 'admin' && <FormControl sx={{ m: 1}} variant="outlined" error={errors.password}>
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
             <OutlinedInput
                 id="outlined-adornment-password"
@@ -214,7 +222,7 @@ const AddAndEditEmployee = (props) => {
                 helperText={errors.DOB && 'DOB is required'}
                 inputRef={(el) => inputRef.current.DOB = el}
             />
-            {user.type === 'admin' && <TextField
+            {user === 'admin' && <TextField
                 error={errors.deptName}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
@@ -226,8 +234,8 @@ const AddAndEditEmployee = (props) => {
                 inputRef={(el) => inputRef.current.deptName = el}
             >
                 {(storeData.department.listDepartment).map((option) => (
-                    <MenuItem key={option.deptCode} value={option.deptCode}>
-                    {option.deptName}
+                    <MenuItem key={option.dept_code} value={option.dept_code}>
+                    {option.dept_name}
                     </MenuItem>
                 ))}
             </TextField>}
@@ -278,7 +286,7 @@ const AddAndEditEmployee = (props) => {
                 helperText={errors.phNo && 'Phone Number is required'}
                 inputRef={(el) => inputRef.current.phNo = el}
             />
-            <Button onClick={onsubmit}>{model} Employee</Button>
+            <Button onClick={onsubmit} >{model} Employee</Button>
             </Stack>
         </>
     )

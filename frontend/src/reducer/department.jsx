@@ -27,6 +27,12 @@ const departmentReducer = ( state = initialState, action ) => {
                     [action.name]: action.value,
                 }
             }
+            case 'RESET_DEPARTMENT':
+                return {
+                    ...state,
+                    department: {}
+                }
+    
             
         default:
             return state;

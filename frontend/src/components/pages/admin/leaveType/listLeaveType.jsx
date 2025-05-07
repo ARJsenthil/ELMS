@@ -14,7 +14,8 @@ import { AlertBox } from "../../../../utilities/alerts/alert";
 import { API } from "../../../../common/api";
 import axios from "axios";
 
-export default function ListLeaveType() {
+export default function ListLeaveType(props) {
+  const { router } = props;
     const columns = [
   { id: 'id', label: 'ID', minWidth: 50 },
   { id: 'leaveType', label: 'LeaveType', minWidth: 100 },
@@ -33,12 +34,12 @@ export default function ListLeaveType() {
 const dispatch = useDispatch();
 const [alert, setAlert] = React.useState({ type: null, message: "", open: false });
 
-const storeData = useSelector( state => state.employee );
-const data = storeData.listEmployee;
+const storeData = useSelector( state => state.leaveType );
+const data = storeData.listLeaveType;
 
 React.useEffect(() => {
   fetchData(dispatch);
-}, [dispatch, data])
+}, [dispatch])
 
 const fetchData = (dispatch) => {
   listLeaveType()(dispatch);
@@ -49,7 +50,7 @@ function createData(id, leaveType, leaveDescription, action) {
 }
 
 const deleteData = (itemID) => {
-  axios.delete(`${API.deleteItem}/${itemID}`)
+  axios.delete(`${API.deleteItem}/${itemID}`, {data: {model: 'leave_type'}})
   .then((res) => {
     setAlert({ type: "success", message: "Leave Type Added", open: true });
     fetchData(dispatch);
@@ -59,15 +60,15 @@ const deleteData = (itemID) => {
 
   })
 }
-
+console.log(data)
 const rows = data.map(element => 
     createData(
         element.id, 
-        element.leaveType, 
-        element.leaveDescription, 
+        element.leave_type, 
+        element.description, 
         <>
-            <Link to={`/leaveType/editLeaveType/${element.id}`}>edit</Link> 
-            <Button onClick={() => deleteData(element.id)}>Delete</Button>
+            <Button onClick={() => router.navigate(`/leaveType/editLeaveType?id=${element.id}`)}>Edit</Button> 
+            {/* <Button onClick={() => deleteData(element.ID)}>Delete</Button> */}
         </>
     )
 );

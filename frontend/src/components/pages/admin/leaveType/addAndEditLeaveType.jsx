@@ -2,35 +2,42 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { API } from "../../../../common/api";
-import { handleInputChangeLeaveType, viewLeaveType } from "../../../../action/leaveType";
+import { handleInputChangeLeaveType, resetLeaveType, viewLeaveType } from "../../../../action/leaveType";
 import { AlertBox } from "../../../../utilities/alerts/alert";
 import { Button, Stack, TextField } from "@mui/material";
 
 const AddAndEditLeaveType = (props) => {
 
     const dispatch = useDispatch();
-    const storeData = useSelector( state => state.leaveType );
-    const data = storeData.leaveType;
-    const {model} = props;
+    const {model, router} = props;
+    console.log(props);
     const [leaveTypeError, setLeaveTypeError] = useState(false);
     const [leaveDescriptionError, setLeaveDescriptionError] = useState(false);
     const [alert, setAlert] = useState({ type: null, message: "", open: false });
-    console.log(data)
     const leaveTypeInputRef = useRef(null);
-    const leaveDescriptionInputRef = useRef(null);
-    const id = null;
+    const leaveDescriptionInputRef = useRef(null); 
+    const id = router.searchParams.get('id');
     useEffect(() => {
+        console.log(model)
+        fetchData(dispatch);
+    }, [dispatch]);
+    const fetchData = (dispatch) => {
         if(model === 'edit') {
-            viewLeaveType()(dispatch);            
+            viewLeaveType(id)(dispatch);            
         }
-    }, [dispatch])
-
+        else {
+            resetLeaveType()(dispatch);  
+        }
+    }
+    const storeData = useSelector( state => state.leaveType );
+    const data = storeData.leaveType;
+    console.log(data);
     const onchange = ({name, value}) => {
-        if(name === 'leaveType') {
+        if(name === 'leave_type') {
             setLeaveTypeError(false);
             handleInputChangeLeaveType(name, value)(dispatch);
         }
-        else if(name === 'leaveDescription') {
+        else if(name === 'description') {
             setLeaveDescriptionError(false);
             handleInputChangeLeaveType(name, value)(dispatch);
         }
@@ -42,14 +49,14 @@ const AddAndEditLeaveType = (props) => {
         let valid = true;
         let focusField = null
 
-        if(!newData.leaveType) {
+        if(!newData.leave_type) {
             setLeaveTypeError(true);
             valid = false;
             if(!focusField) focusField = leaveTypeInputRef;
         }
 
 
-        if(!newData.leaveDescription) {
+        if(!newData.description) {
             setLeaveDescriptionError(true);
             valid = false;
             if(!focusField) focusField = leaveDescriptionInputRef;
@@ -61,14 +68,12 @@ const AddAndEditLeaveType = (props) => {
             console.log(focusField)
         }
         
-        const formdata = new FormData();
-        formdata.append('leaveType', newData.leaveType);
-        formdata.append('leaveDescription', newData.leaveDescription);
+        const tempData = [ {name: 'a'}, {name: 'a'}, {name: 'a'} ]
 
         if(valid) {
             const axiosCall = model === 'add' 
-                ? axios.post(API.addLeaveType, formdata) 
-                : axios.post(API.editLeaveType, formdata);
+                ? axios.post(API.addLeaveType, tempData) 
+                : axios.post(API.editLeaveType, newData);
 
             axiosCall
             .then((res) => {
@@ -94,8 +99,8 @@ const AddAndEditLeaveType = (props) => {
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Leave Type"
-                defaultValue={data.leaveType || ''}
-                name="leaveType"
+                value={data.leave_type || ''}
+                name="leave_type"
                 helperText={leaveTypeError && 'Leave type is required'}
                 inputRef={leaveTypeInputRef}
             />
@@ -104,10 +109,10 @@ const AddAndEditLeaveType = (props) => {
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Leave Description"
-                defaultValue={data.leaveDescription || ''}
+                value={data.description || ''}
                 multiline
                 rows={3}
-                name="leaveDescription"
+                name="description"
                 helperText={leaveDescriptionError && 'Leave description name is required'}
                 inputRef={leaveDescriptionInputRef}
             />

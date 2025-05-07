@@ -6,6 +6,7 @@ import { NAVIGATION } from './components/shared/navigation';
 import { RoutesData } from './components/shared/routes';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ContactSupportOutlined } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
 
 function useDemoRouter(initialPath) {
   console.log(initialPath)
@@ -19,6 +20,7 @@ function useDemoRouter(initialPath) {
       setPathname(initialPath);
       if (window.location.pathname !== initialPath) {
         window.history.replaceState({}, "", initialPath);
+        
       }
     }
     else {
@@ -43,6 +45,8 @@ function useDemoRouter(initialPath) {
     };
   }, [pathname]);
 }
+
+
 
 
 export default function App(props) {
@@ -80,11 +84,28 @@ export default function App(props) {
   const initialPath = `/${!session ? 'login' : session.user.type === 'admin' ? 'dashboard' : 'changePassword'}`;
   
   const router = useDemoRouter(initialPath);
-  const ROUTE_COMPONENTS = RoutesData(session);
+  const ROUTE_COMPONENTS = RoutesData({session: session, router: router});
+  console.log(ROUTE_COMPONENTS);
   const NAVIGATION_DATA = !session ? NAVIGATION.login : ( session.user.type === 'admin' ?  NAVIGATION.admin :  NAVIGATION.employee );  
-  // const router = useDemoRouter(`/${!session ? 'login' : ( session.user.type === 'admin' ?  'dashboard' :  'changePassword' )}`);
-  // const [router, setRouter] = React.useState(useDemoRouter(`/${!session ? 'login' : ( session.user.type === 'admin' ?  'dashboard' :  'changePassword' )}`));
-  return (
+  function DemoPageContent({ pathname }) {
+    return (
+      <>
+        <Box
+          sx={{
+            py: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+          }}
+        >
+          <Typography>Dashboard content for {pathname}</Typography>
+        </Box>
+          {ROUTE_COMPONENTS[pathname] || <div>Page Not Found</div>}
+      </>
+    );
+  } 
+    return (
     <AppProvider
       navigation={NAVIGATION_DATA}
       router={router}
@@ -95,7 +116,7 @@ export default function App(props) {
     >
       <DashboardLayout>
         <PageContainer>
-        {ROUTE_COMPONENTS[router.pathname] || <div>Page Not Found</div>}
+          <DemoPageContent pathname={router.pathname} />
         </PageContainer>
       </DashboardLayout>
     </AppProvider>
