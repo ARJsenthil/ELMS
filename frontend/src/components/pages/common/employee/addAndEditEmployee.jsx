@@ -14,7 +14,7 @@ const AddAndEditEmployee = (props) => {
     const data = storeData.employee.employee;
 
     console.log(props)
-    const {model, user} = props;
+    const {model, user, router} = props;
     const [errors, setErrors] = useState({
         
     });
@@ -23,15 +23,15 @@ const AddAndEditEmployee = (props) => {
     const inputRef = useRef({
         firstname:null,
         lastname:null,
-        mailId:null,
+        email:null,
         password:null,
         gender:null,
-        DOB:null,
-        deptName:null,
+        dob:null,
+        dept_id:null,
         country:null,
-        cityTown:null,
+        city_town:null,
         address:null,
-        phNo:null,
+        ph_no:null,
     });
 
     const emailregex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
@@ -41,7 +41,7 @@ const AddAndEditEmployee = (props) => {
     const numberRegex = /^\d*$/;
     const [loading, setLoading] = useState(true);
 
-    const id = null;
+    const id = router.searchParams.get('id');
     useEffect(() => {
         listDepartment()(dispatch)
         if(model === 'edit') {
@@ -51,34 +51,35 @@ const AddAndEditEmployee = (props) => {
             resetEmployee()(dispatch);
         }
     }, [dispatch])
-
+console.log(data)
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const onchange = ({name, value}) => {
-        var checkfield = [ 'firstname', 'lastname', 'password', 'gender', 'DOB', 'deptName', 'country', 'cityTown', 'address' ]
+        console.log(value);
+        var checkfield = [ 'firstname', 'lastname', 'password', 'gender', 'dob', 'dept_id', 'country', 'city_town', 'address' ]
             if(checkfield.includes(name)) {
                 setErrors({ ...errors, [name]: false });
                 handleInputChangeEmployee(name, value)(dispatch);
             }
-            else if(name === 'mailId') {
+            else if(name === 'email') {
                 handleInputChangeEmployee(name, value)(dispatch);
                 if(emailregex.test(value)) {
-                    setErrors({ ...errors, 'mailId': false });
+                    setErrors({ ...errors, 'email': false });
                 }
                 else {
-                    setErrors({ ...errors, 'mailId': true });
+                    setErrors({ ...errors, 'email': true });
                 }
 
             }
-            else if(name === 'phNo') {
+            else if(name === 'ph_no') {
                 if(numberRegex.test(value) && value.length <= 10) {
                     handleInputChangeEmployee(name, value)(dispatch);
                     if(phoneregex.test(value)) {
-                        setErrors({ ...errors, 'phNo': false });
+                        setErrors({ ...errors, 'ph_no': false });
                     }
                     else {
-                        setErrors({ ...errors, 'phNo': true });
+                        setErrors({ ...errors, 'ph_no': true });
                     }
                 }
             }
@@ -91,10 +92,10 @@ const AddAndEditEmployee = (props) => {
         let focusField = null
         var checkfield = [];
         if(model === 'edit') {
-            checkfield = [ 'firstname', 'lastname', 'mailId', 'gender', 'DOB', 'country', 'cityTown', 'address', 'phNo' ]
+            checkfield = [ 'firstname', 'lastname', 'email', 'gender', 'dob', 'country', 'city_town', 'address', 'ph_no' ]
         }
         else {
-            checkfield = [ 'firstname', 'lastname', 'mailId', 'password', 'gender', 'DOB', 'deptName', 'country', 'cityTown', 'address', 'phNo' ]
+            checkfield = [ 'firstname', 'lastname', 'email', 'password', 'gender', 'dob', 'dept_id', 'country', 'city_town', 'address', 'ph_no' ]
         }
         var checkError = {};
         checkfield.forEach(name => {
@@ -118,13 +119,13 @@ const AddAndEditEmployee = (props) => {
 
         if(valid) {
             const axiosCall = model === 'add' ?
-            axios.post(API.addEmployee, newData) 
-            : axios.post(API.editEmployee, newData);
+            axios.post(API.employee, newData) 
+            : axios.put(API.employee+id, newData);
 
             axiosCall
             .then((res) => {
                 setAlert({ type: "success", message: "Employee Added", open: true });
-                
+                router.navigate('/employee/listEmployee');
             })
             .catch((err) => {
                 setAlert({ type: "warning", message: "Try Again Later", open: true });
@@ -161,17 +162,17 @@ const AddAndEditEmployee = (props) => {
                 inputRef={(el) => inputRef.current.lastname = el}
             />          
             <TextField
-                error={errors.mailId}
+                error={errors.email}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Mail ID"
-                value={data.mailId || ''}
+                value={data.email || ''}
                 type="mail"
-                name="mailId"
-                helperText={errors.mailId && 'Mail ID is required / Invalid Mail id'}
-                inputRef={(el) => inputRef.current.mailId = el}
+                name="email"
+                helperText={errors.email && 'Mail ID is required / Invalid Mail id'}
+                inputRef={(el) => inputRef.current.email = el}
             />
-            {user === 'admin' && <FormControl sx={{ m: 1}} variant="outlined" error={errors.password}>
+            {model === 'add' && <FormControl sx={{ m: 1}} variant="outlined" error={errors.password}>
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
             <OutlinedInput
                 id="outlined-adornment-password"
@@ -211,30 +212,30 @@ const AddAndEditEmployee = (props) => {
                 <MenuItem key="other" value="other">Other</MenuItem>
             </TextField>  
             <TextField
-                error={errors.DOB}
+                error={errors.dob}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
-                label="DOB"
+                label="dob"
                 type="date"
-                value={data.DOB || ''}
-                name="DOB"
+                value={data.dob || ''}
+                name="dob"
                 defaultValue=" "
-                helperText={errors.DOB && 'DOB is required'}
-                inputRef={(el) => inputRef.current.DOB = el}
+                helperText={errors.dob && 'dob is required'}
+                inputRef={(el) => inputRef.current.dob = el}
             />
             {user === 'admin' && <TextField
-                error={errors.deptName}
+                error={errors.dept_id}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Department name"
                 select
-                value={data.deptName || ''}
-                name="deptName"
-                helperText={errors.deptName && 'Department name is required'}
-                inputRef={(el) => inputRef.current.deptName = el}
+                value={data.dept_id || ''}
+                name="dept_id"
+                helperText={errors.dept_id && 'Department name is required'}
+                inputRef={(el) => inputRef.current.dept_id = el}
             >
                 {(storeData.department.listDepartment).map((option) => (
-                    <MenuItem key={option.dept_code} value={option.dept_code}>
+                    <MenuItem key={option.id} value={option.id}>
                     {option.dept_name}
                     </MenuItem>
                 ))}
@@ -250,14 +251,14 @@ const AddAndEditEmployee = (props) => {
                 inputRef={(el) => inputRef.current.country = el}
             />          
             <TextField
-                error={errors.cityTown}
+                error={errors.city_town}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="City/Town"
-                value={data.cityTown || ''}
-                name="cityTown"
-                helperText={errors.cityTown && 'City/Town is required'}
-                inputRef={(el) => inputRef.current.cityTown = el}
+                value={data.city_town || ''}
+                name="city_town"
+                helperText={errors.city_town && 'City/Town is required'}
+                inputRef={(el) => inputRef.current.city_town = el}
             />
             <TextField
                 error={errors.address}
@@ -272,19 +273,19 @@ const AddAndEditEmployee = (props) => {
                 inputRef={(el) => inputRef.current.address = el}
             />
             <TextField
-                error={errors.phNo}
+                error={errors.ph_no}
                 id='outlined-error-helper-text'
                 onChange={(e) => onchange(e.target)}
                 label="Phone Number"
-                value={data.phNo || ''}
-                name="phNo"
+                value={data.ph_no || ''}
+                name="ph_no"
                 slotProps={{
                     input: {
                     startAdornment: <InputAdornment position="start">+91</InputAdornment>,
                     },
                 }}
-                helperText={errors.phNo && 'Phone Number is required'}
-                inputRef={(el) => inputRef.current.phNo = el}
+                helperText={errors.ph_no && 'Phone Number is required'}
+                inputRef={(el) => inputRef.current.ph_no = el}
             />
             <Button onClick={onsubmit} >{model} Employee</Button>
             </Stack>

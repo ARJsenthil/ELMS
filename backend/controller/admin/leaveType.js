@@ -58,7 +58,7 @@ class LeaveType {
         try {
             const { id } = req.params;
             const { leave_type, description } = req.body;
-             pool.query('update table leave_type set leave_type = ? , description = ? where _id = ? ', [ leave_type, description, id ], (err, result) => {
+             pool.query('update leave_type set leave_type = ? , description = ? where id = ? ', [ leave_type, description, id ], (err, result) => {
                 if(err) {
                     if(err.sqlState === '23000') {
                         return res.status(409).json({ status: 0, message: 'Duplicate Entry', error: err });

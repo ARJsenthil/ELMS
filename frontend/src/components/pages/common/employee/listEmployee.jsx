@@ -10,12 +10,12 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Button, Link } from "@mui/material";
 import { listEmployee } from "../../../../action/employee";
+import { listDepartment } from "../../../../action/department";
 import { AlertBox } from "../../../../utilities/alerts/alert";
 import { API } from "../../../../common/api";
 import axios from "axios";
 
 export default function ListEmployee(props) {
-  console.log(props);
   const { router } = props;
   const columns = [
   { id: 'id', label: 'ID', minWidth: 30 },
@@ -31,6 +31,11 @@ export default function ListEmployee(props) {
     minWidth: 100,
   },
   {
+    id: 'status',
+    label: 'Status',
+    minWidth: 100,
+  },
+  {
     id: 'action',
     label: 'Action',
     minWidth: 100,
@@ -40,19 +45,22 @@ export default function ListEmployee(props) {
 const dispatch = useDispatch();
 const [alert, setAlert] = React.useState({ type: null, message: "", open: false });
 
-const storeData = useSelector( state => state.employee );
-const data = storeData.listEmployee;
+const storeData = useSelector( state => state );
+const data = storeData.employee.listEmployee;
+const departmentData = storeData.department.listDepartment;
+console.log(storeData);
 
 React.useEffect(() => {
   fetchData(dispatch);
 }, [dispatch])
 
 const fetchData = (dispatch) => {
+  listDepartment()(dispatch);
   listEmployee()(dispatch);
 }
 
-function createData(id, name, department, phno, action) {
-  return { id, name, department, phno, action };
+function createData(id, name, department, phno, status, action) {
+  return { id, name, department, phno, status, action };
 }
 
 const deleteData = (itemID) => {
@@ -67,19 +75,28 @@ const deleteData = (itemID) => {
   })
 }
 
+const findDepartment = (data, deptId) => {
+    const department = data.find(item => item.id == deptId);
+    return department.dept_name;
+}
+
 const rows = data.map(element => 
     createData(
         element.id, 
-        element.name, 
-        element.deptName, 
-        element.phNo, 
+        element.firstname+' '+element.lastname, 
+        findDepartment(departmentData, element.dept_id), 
+        element.ph_no, 
+        element.emp_status,
         <>
-            <Button onClick={() => {router.navigate(`/employee/editEmployee/${element.id}`);router.pathname('/editemployee')}}>Edit</Button> 
-            {/* <Button onClick={() => deleteData(element.id)}>Delete</Button> */}
+          <Button onClick={() => editData(element.id)}>Edit</Button> 
+          {/* <Button onClick={() => deleteData(element.id)}>Delete</Button> */}
         </>
     )
 );
 
+const editData = (itemID) => {
+  router.navigate(`/employee/editEmployee?id=${itemID}`);
+}
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 

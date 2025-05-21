@@ -14,18 +14,18 @@ function useDemoRouter(initialPath) {
     const currentPath = window.location.pathname;
     return currentPath === "/" ? initialPath : currentPath;
   });
-  
+
   React.useEffect(() => {
-    if(initialPath === '/login') {
+    if (initialPath === '/login') {
       setPathname(initialPath);
       if (window.location.pathname !== initialPath) {
         window.history.replaceState({}, "", initialPath);
-        
+
       }
     }
     else {
 
-      
+
       if (window.location.pathname !== pathname) {
         window.history.replaceState({}, "", pathname);
       }
@@ -42,6 +42,7 @@ function useDemoRouter(initialPath) {
       pathname,
       searchParams: new URLSearchParams(window.location.search),
       navigate,
+      data: {},
     };
   }, [pathname]);
 }
@@ -60,7 +61,7 @@ export default function App(props) {
       image: 'https://avatars.githubusercontent.com/u/19550456',
     },
   });
-  
+
   const authentication = React.useMemo(() => {
     return {
       signIn: () => {
@@ -82,11 +83,11 @@ export default function App(props) {
   }, []);
 
   const initialPath = `/${!session ? 'login' : session.user.type === 'admin' ? 'dashboard' : 'changePassword'}`;
-  
+
   const router = useDemoRouter(initialPath);
-  const ROUTE_COMPONENTS = RoutesData({session: session, router: router});
+  const ROUTE_COMPONENTS = RoutesData({ session: session, router: router });
   console.log(ROUTE_COMPONENTS);
-  const NAVIGATION_DATA = !session ? NAVIGATION.login : ( session.user.type === 'admin' ?  NAVIGATION.admin :  NAVIGATION.employee );  
+  const NAVIGATION_DATA = !session ? NAVIGATION.login : (session.user.type === 'admin' ? NAVIGATION.admin : NAVIGATION.employee);
   function DemoPageContent({ pathname }) {
     return (
       <>
@@ -101,18 +102,18 @@ export default function App(props) {
         >
           <Typography>Dashboard content for {pathname}</Typography>
         </Box>
-          {ROUTE_COMPONENTS[pathname] || <div>Page Not Found</div>}
+        {ROUTE_COMPONENTS[pathname] || <div>Page Not Found</div>}
       </>
     );
-  } 
-    return (
+  }
+  return (
     <AppProvider
       navigation={NAVIGATION_DATA}
       router={router}
       session={session}
       authentication={authentication}
-      // theme={demoTheme}
-      // window={demoWindow}
+    // theme={demoTheme}
+    // window={demoWindow}
     >
       <DashboardLayout>
         <PageContainer>

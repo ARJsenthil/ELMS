@@ -17,9 +17,9 @@ import axios from "axios";
 export default function ListLeave({ leaveStatus }) {
     const columns = [
   { id: 'id', label: 'ID', minWidth: 50 },
-  { id: 'name', label: 'Name', minWidth: 100 },
+  { id: 'leave_type', label: 'Leave Type', minWidth: 100 },
   {
-    id: 'leaveType',
+    id: 'leave_type',
     label: 'Leave Description',
     minWidth: 170,
   },
@@ -43,7 +43,7 @@ const data = storeData.listLeave;
 
 React.useEffect(() => {
   fetchData(leaveStatus, dispatch);
-}, [dispatch, data, leaveStatus])
+}, [dispatch, leaveStatus])
 
 const fetchData = (leaveStatus = null, dispatch) => {
   if(leaveStatus) {
@@ -54,8 +54,8 @@ const fetchData = (leaveStatus = null, dispatch) => {
   }
 }
 
-function createData(id, name, leaveType, status, action) {
-  return { id, name, leaveType, status, action };
+function createData(id, leave_type, description, status, action) {
+  return { id, leave_type, description, status, action };
 }
 const deleteData = (itemID) => {
   axios.delete(`${API.deleteItem}/${itemID}`)
@@ -71,8 +71,8 @@ const deleteData = (itemID) => {
 const rows = data.map(element => 
   createData(
       element.id, 
-      element.name, 
-      element.leaveType, 
+      element.leave_type, 
+      element.description, 
       element.status === "Approved" ? (
           <p style={{ color: 'green' }}>Approved</p>
       ) : element.status === "NotApproved" ? (

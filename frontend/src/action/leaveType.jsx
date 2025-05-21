@@ -3,7 +3,7 @@ import axios from "axios"
 
 export const listLeaveType = () => {
     return function (dispatch) {
-        axios.get(API.listLeaveType)
+        axios.get(API.leaveType)
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             console.log(data);
@@ -17,7 +17,7 @@ export const listLeaveType = () => {
 
 export const viewLeaveType = (id = '') => {
     return function (dispatch) {
-        axios.get(API.viewLeaveType + '/' + id)
+        axios.get(API.leaveType + '/' + id)
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'VIEW_LEAVE_TYPE', payload: data ? data : [], total: total ? total : 0 })

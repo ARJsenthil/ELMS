@@ -82,13 +82,14 @@ const AddAndEditDepartment = (props) => {
         const tempData = [ {name: 'a'}, {name: 'a'}, {name: 'a'} ];
         if(valid) {
             const axiosCall = model === 'add' 
-                ? axios.post(API.addDepartment, newData) 
-                : axios.put(API.editDepartment+'/'+id, newData);
+                ? axios.post(API.department, newData) 
+                : axios.put(API.department+'/'+id, newData);
 
             axiosCall
             .then((res) => {
                 var message = res.data.message;
-                setAlert({ type: "success", message: message, open: true });
+        setAlert({ type: "success", message: message, open: true });
+                router.navigate('/department/listDepartment');
                 
             })
             .catch((err) => {

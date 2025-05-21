@@ -29,7 +29,7 @@ class LeaveRequest {
                     return res.status(409).json({ status: 0, message: "Server Error", error: err });
                 }
                 else {
-                    return res.status(200).json({ status: 1, message: 'Leave Request Retrived Successfully' });
+                    return res.status(200).json({ status: 1, message: 'Leave Request Retrived Successfully', data: result });
                 }
             })
         } catch (err) {
@@ -40,7 +40,7 @@ class LeaveRequest {
     getById(req, res) {
         try {
             const {id} = req.params;
-            pool.query("select * from leave_resuest where id = ?", id, (err, result) =>{
+            pool.query("select * from leave_request where id = ?", id, (err, result) =>{
                 if(err) {
                     return res.status(409).json({ status:0, message: "Server Error", error: err });
                 }
@@ -57,7 +57,7 @@ class LeaveRequest {
         try {
             const { id } = req.params;
             const { from_date, to_date, leave_type, description, emp_code, leave_status } = req.body;
-            pool.query("update leave_request set from_date = ?, to_date = ?, leave_type = ?, description = ?, emp_code = ?, leave_status = ? where = ?", [from_date, to_date, leave_type, description, emp_code, leave_status, id], (err, result) => {
+            pool.query("update leave_request set from_date = ?, to_date = ?, leave_type = ?, description = ?, emp_code = ?, leave_status = ? where id = ?", [from_date, to_date, leave_type, description, emp_code, leave_status, id], (err, result) => {
                 if(err) {
                     return res.status(409).json({ status: 0, message: "Server Error", error: err });
                 }

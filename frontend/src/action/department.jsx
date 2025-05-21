@@ -3,7 +3,7 @@ import axios from "axios"
 
 export function listDepartment () {
     return function (dispatch) {
-        axios.get(API.listDepartment)
+        axios.get(API.department)
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'LIST_DEPARTMENT', payload: data ? data : [], total: total ? total : 0 })
@@ -16,7 +16,7 @@ export function listDepartment () {
 
 export function viewDepartment (id = '') {
     return function (dispatch) {
-        axios.get(API.viewDepartment + '/' + id)
+        axios.get(API.department + '/' + id)
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             console.log(data);

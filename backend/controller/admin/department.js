@@ -47,7 +47,7 @@ class Department {
                     return res.status(400).json({ status: 0, message: 'server error', error: err });
                 }
                 else {
-                    return res.status(200).json({ status: 0, message: 'server error', data: result[0] });
+                    return res.status(200).json({ status: 1, message: 'Department Retrived Successfully', data: result[0] });
                 }
             })
         } catch (err) {

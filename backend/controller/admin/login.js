@@ -8,7 +8,8 @@ router.post('/login', async (req, res) => {
         try {
         const { username, password, type } = req.body;
         console.log(req.body);
-         pool.query(`SELECT * FROM ${type} WHERE username = ? and password = ?`, [username, password], async (err, result) => {
+         pool.query(`SEL
+            ECT * FROM ${type} WHERE username = ? and password = ?`, [username, password], async (err, result) => {
             if(err) {
                 console.log(err);
                 return res.status(400).json({ status: 0, message: 'server error' });

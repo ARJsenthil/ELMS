@@ -3,7 +3,7 @@ import axios from "axios"
 
 export const listEmployee = () => {
     return function (dispatch) {
-        axios.get(API.listEmployee)
+        axios.get(API.employee)
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'LIST_EMPLOYEE', payload: data ? data : [], total: total ? total : 0 })
@@ -16,7 +16,7 @@ export const listEmployee = () => {
 
 export const viewEmployee = (id = '') => {
     return function (dispatch) {
-        axios.get(API.viewEmployee + '/' + id)
+        axios.get(API.employee + id)
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'VIEW_EMPLOYEE', payload: data ? data : [], total: total ? total : 0 })

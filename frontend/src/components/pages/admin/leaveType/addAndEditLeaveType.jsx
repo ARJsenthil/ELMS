@@ -10,7 +10,6 @@ const AddAndEditLeaveType = (props) => {
 
     const dispatch = useDispatch();
     const {model, router} = props;
-    console.log(props);
     const [leaveTypeError, setLeaveTypeError] = useState(false);
     const [leaveDescriptionError, setLeaveDescriptionError] = useState(false);
     const [alert, setAlert] = useState({ type: null, message: "", open: false });
@@ -72,16 +71,20 @@ const AddAndEditLeaveType = (props) => {
 
         if(valid) {
             const axiosCall = model === 'add' 
-                ? axios.post(API.addLeaveType, tempData) 
-                : axios.post(API.editLeaveType, newData);
+                ? axios.post(API.leaveType, newData) 
+                : axios.put(API.leaveType+'/'+id, newData);
 
+            let message = '';
             axiosCall
             .then((res) => {
-                setAlert({ type: "success", message: "Leave Type Added", open: true });
+                message = res.data.message;
+                setAlert({ type: "success", message: message, open: true });
+                router.navigate('/leavetype/listLeaveType');
                 
             })
             .catch((err) => {
-                setAlert({ type: "warning", message: "Try Again Later", open: true });
+                message = err.response.data.message;
+                setAlert({ type: "warning", message: message, open: true });
 
             })
         }

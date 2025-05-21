@@ -8,6 +8,7 @@ const initialState = {
 const departmentReducer = ( state = initialState, action ) => {
     switch (action.type) {
         case 'LIST_DEPARTMENT':
+            console.log(action)
             return {
                 ...state,
                 listDepartment: action.payload,
