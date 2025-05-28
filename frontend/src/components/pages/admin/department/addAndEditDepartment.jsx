@@ -22,7 +22,8 @@ const AddAndEditDepartment = (props) => {
     const deptCodeInputRef = useRef(null);
     const deptNameInputRef = useRef(null);
     const deptShortNameInputRef = useRef(null);
-    const id = router.searchParams.get('id');
+    const idData = JSON.parse(localStorage.getItem('managementId'));
+    const id = idData.name == 'department'? idData.id: ( model == "edit" && router.navigate('/department/listDepartment'));
     useEffect(() => {
         if(model === 'edit') {
             viewDepartment(id)(dispatch);
@@ -88,7 +89,7 @@ const AddAndEditDepartment = (props) => {
             axiosCall
             .then((res) => {
                 var message = res.data.message;
-        setAlert({ type: "success", message: message, open: true });
+                setAlert({ type: "success", message: message, open: true });
                 router.navigate('/department/listDepartment');
                 
             })

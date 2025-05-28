@@ -15,14 +15,15 @@ const AddAndEditLeaveType = (props) => {
     const [alert, setAlert] = useState({ type: null, message: "", open: false });
     const leaveTypeInputRef = useRef(null);
     const leaveDescriptionInputRef = useRef(null); 
-    const id = router.searchParams.get('id');
+    const idData = JSON.parse(localStorage.getItem('managementId'));
+    const id = idData.name == 'leaveType'? idData.id: ( model == "edit" && router.navigate('/leaveType/listLeaveType'));
     useEffect(() => {
         console.log(model)
         fetchData(dispatch);
     }, [dispatch]);
     const fetchData = (dispatch) => {
         if(model === 'edit') {
-            viewLeaveType(id)(dispatch);            
+            viewLeaveType(id)(dispatch);
         }
         else {
             resetLeaveType()(dispatch);  
@@ -79,8 +80,8 @@ const AddAndEditLeaveType = (props) => {
             .then((res) => {
                 message = res.data.message;
                 setAlert({ type: "success", message: message, open: true });
-                router.navigate('/leavetype/listLeaveType');
-                
+                router.navigate('/leaveType/listLeaveType');
+
             })
             .catch((err) => {
                 message = err.response.data.message;

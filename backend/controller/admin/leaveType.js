@@ -1,9 +1,11 @@
 const { pool } = require("../../config/db");
+const { Capitalize } = require("../../utilities/helperFunction");
 
 class LeaveType {
     async create(req, res) {
         try {
-            const { leave_type, description } = req.body;
+            const { description } = req.body;
+            const leave_type = Capitalize(req.body.leave_type);
              pool.query('insert into leave_type ( leave_type, description ) values ( ?, ? )', [ leave_type, description ], (err, result) => {
                 if(err) {
                     if(err.sqlState === '23000') {
@@ -57,8 +59,9 @@ class LeaveType {
     async update(req, res) {
         try {
             const { id } = req.params;
-            const { leave_type, description } = req.body;
-             pool.query('update leave_type set leave_type = ? , description = ? where id = ? ', [ leave_type, description, id ], (err, result) => {
+            const { description } = req.body;
+            const leave_type = Capitalize(req.body.leave_type);
+            pool.query('update leave_type set leave_type = ? , description = ? where id = ? ', [ leave_type, description, id ], (err, result) => {
                 if(err) {
                     if(err.sqlState === '23000') {
                         return res.status(409).json({ status: 0, message: 'Duplicate Entry', error: err });

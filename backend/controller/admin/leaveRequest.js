@@ -6,7 +6,6 @@ class LeaveRequest {
     create(req, res) {
         try {
             const { from_date, to_date, leave_type, description, emp_code, leave_status } = req.body;
-            console.log(req.body);
             pool.query('insert into leave_request ( from_date, to_date, leave_type, description, emp_code ) values ( ?, ?, ?, ?, ? )', [from_date, to_date, leave_type, description, emp_code, leave_status], (err, result) => {
                 if(err) {
                     console.log(err);

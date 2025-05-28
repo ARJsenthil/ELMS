@@ -86,7 +86,9 @@ const rows = data.map(element =>
         element.firstname+' '+element.lastname, 
         findDepartment(departmentData, element.dept_id), 
         element.ph_no, 
-        element.emp_status,
+        <>
+          <Button onClick={() => changeStatus(element.id)}>{element.empStatus? "Active": "InActive"}</Button>
+        </>,
         <>
           <Button onClick={() => editData(element.id)}>Edit</Button> 
           {/* <Button onClick={() => deleteData(element.id)}>Delete</Button> */}
@@ -94,9 +96,12 @@ const rows = data.map(element =>
     )
 );
 
-const editData = (itemID) => {
-  router.navigate(`/employee/editEmployee?id=${itemID}`);
-}
+  const editData = (itemID) => {
+    router.data = { ...router.data, id: itemID }
+    console.log(router)
+    localStorage.setItem("managementId", JSON.stringify({ "id": itemID, "name": "employee"}));
+    router.navigate(`/employee/editEmployee`);
+  }
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 

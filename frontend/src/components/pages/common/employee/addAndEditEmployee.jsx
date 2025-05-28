@@ -41,7 +41,8 @@ const AddAndEditEmployee = (props) => {
     const numberRegex = /^\d*$/;
     const [loading, setLoading] = useState(true);
 
-    const id = router.searchParams.get('id');
+    const idData = JSON.parse(localStorage.getItem('managementId'));
+    const id = idData.name == 'employee'? idData.id: ( model == "edit" && router.navigate('/employee/listEmployee'));
     useEffect(() => {
         listDepartment()(dispatch)
         if(model === 'edit') {

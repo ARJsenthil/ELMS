@@ -1,10 +1,13 @@
 const { pool } = require("../../config/db");
+const { Capitalize } = require("../../utilities/helperFunction");
 
 class Employee {
 
     create(req, res) {
         try {
-            const { firstname, lastname, email, password_hash, gender, dob, dept_id, country, city_town, address, ph_no } = req.body;
+            const { email, password_hash, gender, dob, dept_id, country, city_town, address, ph_no } = req.body;
+            const firstname = Capitalize(req.body.firstname);
+            const lastname = Capitalize(req.body.lastname);
             const employeeData = [ firstname, lastname, email, password_hash, gender, dob, dept_id, country, city_town, address, ph_no ];
 
             pool.query("insert into employee ( firstname, lastname, email, password_hash, gender, dob, dept_id, country, city_town, address, ph_no ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", employeeData, (err, result) => {
@@ -58,7 +61,9 @@ class Employee {
     update(req, res) {
         try {
             const { id } = req.params;
-            const { firstname, lastname, email, gender, dob, dept_id, country, city_town, address, ph_no } = req.body;
+            const { email, gender, dob, dept_id, country, city_town, address, ph_no } = req.body;
+            const firstname = Capitalize(req.body.firstname);
+            const lastname = Capitalize(req.body.lastname);
             console.log(ph_no);
             pool.query("update employee set firstname = ?, lastname = ?, email = ?, gender = ?, dob = ?, dept_id = ?, country = ?, city_town = ?, address = ?, ph_no = ? where id = ?", [ firstname, lastname, email, gender, dob, dept_id, country, city_town, address, ph_no, id ], (err, result) => {
                 if(err) {
