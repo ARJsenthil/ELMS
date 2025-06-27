@@ -4,6 +4,7 @@ const ROOTURL = 'http://localhost:4000/api/v1';
 
 export const API = {
 
+    BASE_URL: ROOTURL,
     login: ROOTURL + '/auth/login',
     
     totalEmployee: ROOTURL + '/employee/totalEmployee',

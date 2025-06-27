@@ -9,4 +9,5 @@ module.exports = function (app) {
     app.use(`${BASE_URL}leaveType`, require('./leaveType'));
     app.use(`${BASE_URL}employee`, require('./employee'));
     app.use(`${BASE_URL}delete`, require('../controller/admin/deleteData'));
+    app.use(`${BASE_URL}dashboard`, require('./dashboard'));
 }

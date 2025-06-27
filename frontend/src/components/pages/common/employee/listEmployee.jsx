@@ -77,7 +77,7 @@ const deleteData = (itemID) => {
 
 const findDepartment = (data, deptId) => {
     const department = data.find(item => item.id == deptId);
-    return department.dept_name;
+    return department.dept_name || "";
 }
 
 const rows = data.map(element => 

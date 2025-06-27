@@ -7,6 +7,12 @@ const initialState = {
 
 const dashboardReducer = ( state = initialState, action ) => {
     switch (action.type) {
+        case 'TOTAL_COUNT':
+            return {
+                ...state,
+                ...action.total,
+                // totalDepartment: action.total,
+            }
         case 'TOTAL_DEPARTMENT':
             return {
                 ...state,

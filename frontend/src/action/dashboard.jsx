@@ -1,6 +1,17 @@
 import { API } from "../common/api";
 import axios from "axios"
 
+export function totalCount() {
+    return function (dispatch) {
+        return axios.get(API.BASE_URL+"/dashboard/totalCount")
+        .then((res) => {
+            dispatch({ type: 'TOTAL_COUNT', total: res.data.data || 0 });
+        })
+        .catch((err) => {
+            dispatch({ type: 'TOTAL_DEPARTMENT', total: 0 });
+        })
+    }
+}
 export function totalDepartment () {
     return function (dispatch) {
         return axios.get(API.totalDepartment)

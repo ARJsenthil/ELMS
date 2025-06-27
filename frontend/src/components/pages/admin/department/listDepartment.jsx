@@ -14,74 +14,74 @@ import { AlertBox } from "../../../../utilities/alerts/alert";
 import { API } from "../../../../common/api";
 import axios from "axios";
 
-export default function ListDepartment( props ) {
+export default function ListDepartment(props) {
   const { router } = props;
   const columns = [
-  { id: 'id', label: 'ID', minWidth: 50 },
-  { id: 'dept_code', label: 'Dept Code', minWidth: 100 },
-  {
-    id: 'dept_name',
-    label: 'Dept Name',
-    minWidth: 170,
-  },
-  {
-    id: 'action',
-    label: 'Action',
-    minWidth: 100,
-  },
-];
+    { id: 'id', label: 'ID', minWidth: 50 },
+    { id: 'dept_code', label: 'Dept Code', minWidth: 100 },
+    {
+      id: 'dept_name',
+      label: 'Dept Name',
+      minWidth: 170,
+    },
+    {
+      id: 'action',
+      label: 'Action',
+      minWidth: 100,
+    },
+  ];
 
-const dispatch = useDispatch();
-const [alert, setAlert] = React.useState({ type: null, message: "", open: false });
+  const dispatch = useDispatch();
+  const [alert, setAlert] = React.useState({ type: null, message: "", open: false });
 
-const storeData = useSelector( state => state.department );
-const data = storeData.listDepartment;
+  const storeData = useSelector(state => state.department);
+  const data = storeData.listDepartment;
 
-React.useEffect(() => {
-  fetchData(dispatch);
-}, [dispatch])
+  React.useEffect(() => {
+    fetchData(dispatch);
+  }, [dispatch])
 
-const fetchData = (dispatch) => {
-  listDepartment()(dispatch);
-  // router.navigate('/dashboard');
-}
+  const fetchData = (dispatch) => {
+    listDepartment()(dispatch);
+    // router.navigate('/dashboard');
+  }
 
-function createData(id, dept_code, dept_name, action) {
-  return { id, dept_code, dept_name, action };
-}
+  function createData(id, dept_code, dept_name, action) {
+    return { id, dept_code, dept_name, action };
+  }
 
   const editData = (itemID) => {
     router.data = { ...router.data, id: itemID }
     console.log(router)
-    localStorage.setItem("managementId", JSON.stringify({ "id": itemID, "name": "department"}));
+    localStorage.setItem("managementId", JSON.stringify({ "id": itemID, "name": "department" }));
     router.navigate(`/department/editDepartment`);
   }
-const deleteData = (itemID) => {
-  // alert(itemID)
-  axios.delete(`${API.deleteItem}/${itemID}`, {
-    data: { model: 'department' }
-  })  
-  .then((res) => {
-    setAlert({ type: "success", message: res.data.message, open: true });
-    fetchData(dispatch);
-  })
-  .catch((err) => {
-    setAlert({ type: "warning", message: "Try Again Later", open: true });
+  const deleteData = (itemID) => {
+    // alert(itemID)
+    axios.delete(`${API.deleteItem}/${itemID}`, {
+      data: { model: 'department' }
+    })
+      .then((res) => {
+        setAlert({ type: "success", message: res.data.message, open: true });
+        fetchData(dispatch);
+      })
+      .catch((err) => {
+        setAlert({ type: "warning", message: "Try Again Later", open: true });
 
-  })
-}
+      })
+  }
 
-const rows = data.map(element => 
+  const rows = data.map(element =>
     createData(
-        element.id, 
-        element.dept_code, 
-        element.dept_name, 
-        <>
-            <Button onClick={() => editData(element.id)}>Edit</Button> 
-            {/* <Button onClick={() => deleteData(element.id)}>Delete</Button> */}
-        </>
+      element.id,
+      element.dept_code,
+      element.dept_name,
+      <>
+        <Button onClick={() => editData(element.id)}>Edit</Button>
+        {/* <Button onClick={() => deleteData(element.id)}>Delete</Button> */}
+      </>
     )
-);
+  );
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -94,60 +94,61 @@ const rows = data.map(element =>
     setPage(0);
   };
   const handleAlertClose = () => {
-      setAlert((pre) => ({ ...pre, open: false }))
+    setAlert((pre) => ({ ...pre, open: false }))
   }
 
   return (
     <>
-        { alert.open && <AlertBox alertType={alert.type} message={alert.message} onClose={handleAlertClose} /> }
-        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
+      {alert.open && <AlertBox alertType={alert.type} message={alert.message} onClose={handleAlertClose} />}
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <TableContainer sx={{ maxHeight: 440 }} loading>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.format && typeof value === 'number'
+                              ? column.format(value)
+                              : value}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          loading
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
     </>
   );
 }
