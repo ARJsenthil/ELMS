@@ -87,7 +87,7 @@ const rows = data.map(element =>
         findDepartment(departmentData, element.dept_id), 
         element.ph_no, 
         <>
-          <Button onClick={() => changeStatus(element.id)}>{element.empStatus? "Active": "InActive"}</Button>
+          <Button /**onClick={() => changeStatus(element.id)}*/>{element.empStatus? "Active": "InActive"}</Button>
         </>,
         <>
           <Button onClick={() => editData(element.id)}>Edit</Button> 
