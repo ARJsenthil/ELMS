@@ -12,9 +12,9 @@ class Auth {
     async login(req, res) {
 
         try {
-            const { username, password } = req.body;
+            const { username, password, type } = req.body;
 
-            pool.query("select * from user_data where username = ?", username, async (err, result) => {
+            pool.query("select * from user_data where username = ? and type = ?", [username, type], async (err, result) => {
                 if(err) {
                     return res.status(409).json({ status: 0, message: "Try Again Later", error: err });
                 }

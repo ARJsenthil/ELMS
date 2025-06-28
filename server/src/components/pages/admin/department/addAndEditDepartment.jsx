@@ -22,7 +22,7 @@ const AddAndEditDepartment = (props) => {
     const deptCodeInputRef = useRef(null);
     const deptNameInputRef = useRef(null);
     const deptShortNameInputRef = useRef(null);
-    const idData = JSON.parse(localStorage.getItem('managementId'));
+    const idData = JSON.parse(localStorage.getItem('managementId')) || "";
     const id = idData.name == 'department'? idData.id: ( model == "edit" && router.navigate('/department/listDepartment'));
     useEffect(() => {
         if(model === 'edit') {

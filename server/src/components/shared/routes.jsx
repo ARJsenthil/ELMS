@@ -14,7 +14,7 @@ import Login from "../pages/login";
 export const RoutesData = (props) => {
 
     const { session, router } = props;
-    const user = session ? session.user.type : 'admin';
+    const user = session ? session.user.type : null;
 
     const routes = {
 
