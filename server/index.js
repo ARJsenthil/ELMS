@@ -19,17 +19,6 @@ const testConnection = async () => {
 }
 testConnection();
 
-app.get('/',async function (req, res) {
-    try {
-        const data = await pool.query('insert into admin ( username, password ) values ( "a", "b" )')
-        console.log(data)
-        res.send(data)
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ status: 0, message: 'server error' });
-    }
-})
-
 app.use(cors());
 
 require('./routes')(app);
