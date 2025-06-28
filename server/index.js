@@ -18,7 +18,9 @@ const testConnection = async () => {
     }
 }
 testConnection();
-
+app.get('/', (req, res) => {
+  res.send('Server is running!');
+});
 app.use(cors());
 
 require('./routes')(app);
