@@ -9,32 +9,30 @@ import { ContactSupportOutlined } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 
 function useDemoRouter(initialPath) {
-  console.log(initialPath)
   const [pathname, setPathname] = React.useState(() => {
     const currentPath = window.location.pathname;
     return currentPath === "/" ? initialPath : currentPath;
   });
 
   React.useEffect(() => {
-    if (initialPath === '/login') {
-      setPathname(initialPath);
-      if (window.location.pathname !== initialPath) {
-        window.history.replaceState({}, "", initialPath);
+    const onPopState = () => {
+      setPathname(window.location.pathname);
+    };
 
-      }
-    }
-    else {
-
-
-      if (window.location.pathname !== pathname) {
-        window.history.replaceState({}, "", pathname);
-      }
-    }
-  }, [pathname, initialPath]);
+    window.addEventListener("popstate", onPopState);
+    return () => {
+      window.removeEventListener("popstate", onPopState);
+    };
+  }, []);
 
   // Navigate function to update path
-  const navigate = (path) => {
+  const navigate = (path, { replace = false } = {}) => {
     setPathname(path);
+    if (replace) {
+      window.history.replaceState({}, "", path);
+    } else {
+      window.history.pushState({}, "", path);
+    }
   };
 
   return React.useMemo(() => {
@@ -46,6 +44,7 @@ function useDemoRouter(initialPath) {
     };
   }, [pathname]);
 }
+
 
 
 

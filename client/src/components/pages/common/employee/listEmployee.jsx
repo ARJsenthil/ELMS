@@ -100,7 +100,7 @@ const rows = data.map(element =>
     router.data = { ...router.data, id: itemID }
     console.log(router)
     localStorage.setItem("managementId", JSON.stringify({ "id": itemID, "name": "employee"}));
-    router.navigate(`/employee/editEmployee`);
+    router.navigate(`/employee/editEmployee`, { replace: true });
   }
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);

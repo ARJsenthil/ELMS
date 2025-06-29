@@ -54,7 +54,7 @@ export default function ListDepartment(props) {
     router.data = { ...router.data, id: itemID }
     console.log(router)
     localStorage.setItem("managementId", JSON.stringify({ "id": itemID, "name": "department" }));
-    router.navigate(`/department/editDepartment`);
+    router.navigate(`/department/editDepartment`, { replace: true });
   }
   const deleteData = (itemID) => {
     // alert(itemID)

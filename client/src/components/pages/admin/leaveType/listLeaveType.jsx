@@ -66,7 +66,7 @@ export default function ListLeaveType(props) {
     router.data = { ...router.data, id: itemID }
     console.log(router)
     localStorage.setItem("managementId", JSON.stringify({ "id": itemID, "name": "leaveType"}));
-    router.navigate(`/leaveType/editLeaveType`);
+    router.navigate(`/leaveType/editLeaveType`, { replace: true });
   }
 
   const rows = data.map(element =>

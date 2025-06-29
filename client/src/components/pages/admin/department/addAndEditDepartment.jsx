@@ -23,7 +23,7 @@ const AddAndEditDepartment = (props) => {
     const deptNameInputRef = useRef(null);
     const deptShortNameInputRef = useRef(null);
     const idData = JSON.parse(localStorage.getItem('managementId')) || "";
-    const id = idData.name == 'department'? idData.id: ( model == "edit" && router.navigate('/department/listDepartment'));
+    const id = idData.name == 'department'? idData.id: ( model == "edit" && router.navigate('/department/listDepartment', { replace: true }));
     useEffect(() => {
         if(model === 'edit') {
             viewDepartment(id)(dispatch);
@@ -90,7 +90,7 @@ const AddAndEditDepartment = (props) => {
             .then((res) => {
                 var message = res.data.message;
                 setAlert({ type: "success", message: message, open: true });
-                router.navigate('/department/listDepartment');
+                router.navigate('/department/listDepartment', { replace: true });
                 
             })
             .catch((err) => {

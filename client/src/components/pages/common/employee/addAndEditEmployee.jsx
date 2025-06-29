@@ -42,7 +42,7 @@ const AddAndEditEmployee = (props) => {
     const [loading, setLoading] = useState(true);
 
     const idData = JSON.parse(localStorage.getItem('managementId'));
-    const id = idData.name == 'employee'? idData.id: ( model == "edit" && router.navigate('/employee/listEmployee'));
+    const id = idData.name == 'employee'? idData.id: ( model == "edit" && router.navigate('/employee/listEmployee', { replace: true }));
     useEffect(() => {
         listDepartment()(dispatch)
         if(model === 'edit') {
@@ -126,7 +126,7 @@ console.log(data)
             axiosCall
             .then((res) => {
                 setAlert({ type: "success", message: "Employee Added", open: true });
-                router.navigate('/employee/listEmployee');
+                router.navigate('/employee/listEmployee', { replace: true });
             })
             .catch((err) => {
                 setAlert({ type: "warning", message: "Try Again Later", open: true });

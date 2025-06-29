@@ -33,7 +33,7 @@ class Auth {
                                     return token;
                                 }
                                 const genaratedToken = jwt.sign(data, process.env.JWT_ACCESS_TOKEN, { expiresIn: '1h' });
-                                return res.status(200).json({ status: 1, message: `Welcome Back ${username}`, data: { token: genaratedToken }});
+                                return res.status(200).json({ status: 1, message: `Welcome Back ${username}`, data: { token: genaratedToken, data: { u} }});
                             }
                         });
                     }
