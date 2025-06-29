@@ -45,10 +45,6 @@ function useDemoRouter(initialPath) {
   }, [pathname]);
 }
 
-
-
-
-
 export default function App(props) {
   const [session, setSession] = React.useState({
     user: {
