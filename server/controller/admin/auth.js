@@ -10,30 +10,32 @@ class Auth {
         return token;
     }
     async login(req, res) {
-
         try {
-            const { username, password, type } = req.body;
-
-            pool.query("select * from user_data where username = ? and type = ?", [username, type], async (err, result) => {
-                if(err) {
+            const { ph_no, password, type } = req.body;
+            console.log(req.body);
+            pool.query(`select * from ${type} where ph_no = ?`, ph_no, async (err, result) => {
+                if (err) {
                     return res.status(409).json({ status: 0, message: "Try Again Later", error: err });
                 }
                 else {
-                    if(result.length >= 0) {
+                    if (result.length > 0) {
                         const data = result[0];
-                        console.log(await bcrypt.compare(password, result[0].password))
-                        await bcrypt.compare(password, result[0].password, (err, result) => {
-                            if(err) {
+                        console.log(result);
+                        // console.log(await bcrypt.compare(password, result[0].password))
+                        bcrypt.compare(password, result[0].password_hash, (err, result) => {
+                            if (err) {
                                 console.log(err);
                                 return res.status(409).json({ status: 0, message: "Incorrect Password", error: err });
                             }
                             else {
+                                const employeeDetail = { id: data.id, email: data.email, ph_no: data.ph_no, type };
+                                employeeDetail["name"]= data.firstname? data.firstname+' '+data.lastname: data.name;
                                 function generateToken(payload) {
                                     const token = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN);
                                     return token;
                                 }
                                 const genaratedToken = jwt.sign(data, process.env.JWT_ACCESS_TOKEN, { expiresIn: '1h' });
-                                return res.status(200).json({ status: 1, message: `Welcome Back ${username}`, data: { token: genaratedToken, data: { u} }});
+                                return res.status(200).json({ status: 1, message: `Welcome Back ${employeeDetail.name}`, data: { token: genaratedToken, data: employeeDetail } });
                             }
                         });
                     }
@@ -43,18 +45,18 @@ class Auth {
                 }
             })
         } catch (err) {
-            
+
         }
     }
 
     async register(req, res) {
         try {
             console.log(req.body);
-            const { username, password, email } = req.body;
+            const { ph_no, password, email } = req.body;
             const password_hash = await bcrypt.hash(password, 5);
             console.log(password_hash);
-            pool.query("insert into user_data (username, email, password) values (?, ?, ?)", [username, email, password_hash], (err, result) => {
-                if(err) {
+            pool.query("insert into user_data (ph_no, email, password) values (?, ?, ?)", [ph_no, email, password_hash], (err, result) => {
+                if (err) {
                     return res.status(409).json({ status: 0, message: "Registeration Failed Try Again Later", error: err });
                 }
                 else {

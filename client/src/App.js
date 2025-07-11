@@ -5,8 +5,10 @@ import { PageContainer } from '@toolpad/core/PageContainer';
 import { NAVIGATION } from './components/shared/navigation';
 import { RoutesData } from './components/shared/routes';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ContactSupportOutlined } from '@mui/icons-material';
+import { ContactSupportOutlined, WindowSharp } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
+import { useState } from 'react';
+import { PageNotFound } from './components/authentications/pageNotFound';
 
 function useDemoRouter(initialPath) {
   const [pathname, setPathname] = React.useState(() => {
@@ -46,20 +48,18 @@ function useDemoRouter(initialPath) {
 }
 
 export default function App(props) {
-  const [session, setSession] = React.useState({
-    user: {
-      id: 'admin',
-      type: 'admin',
-      name: 'Bharat Kashyap',
-      password: 'Bharat Kashyap',
-      email: 'bharatkashyap@outlook.com',
-      image: 'https://avatars.githubusercontent.com/u/19550456',
-    },
-  });
-
+  const [session, setSession] = React.useState(
+    JSON.parse(localStorage.getItem('loginSession')) ?
+      {
+        user: JSON.parse(localStorage.getItem('loginSession'))
+      } :
+      null
+  );
+  console.log(JSON.parse(localStorage.getItem('loginSession')));
   const authentication = React.useMemo(() => {
     return {
       signIn: () => {
+        setSession(null);
         // setSession({
         //   user: {
         //     id: 'admin',
@@ -73,13 +73,15 @@ export default function App(props) {
       },
       signOut: () => {
         setSession(null);
+        localStorage.removeItem('loginSession');
+        router.navigate('/login');
       },
     };
   }, []);
-
   const initialPath = `/${!session ? 'login' : session.user.type === 'admin' ? 'dashboard' : 'changePassword'}`;
 
   const router = useDemoRouter(initialPath);
+  console.log(session);
   const ROUTE_COMPONENTS = RoutesData({ session: session, router: router });
   console.log(ROUTE_COMPONENTS);
   const NAVIGATION_DATA = !session ? NAVIGATION.login : (session.user.type === 'admin' ? NAVIGATION.admin : NAVIGATION.employee);
@@ -95,9 +97,9 @@ export default function App(props) {
             textAlign: 'center',
           }}
         >
-          <Typography>Dashboard content for {pathname}</Typography>
+          {/* <Typography>Dashboard content for {pathname}</Typography> */}
         </Box>
-        {ROUTE_COMPONENTS[pathname] || <div>Page Not Found</div>}
+        {ROUTE_COMPONENTS[pathname] || <PageNotFound router={router} session={session} />}
       </>
     );
   }

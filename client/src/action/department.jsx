@@ -19,7 +19,6 @@ export function viewDepartment (id = '') {
         axios.get(API.department + '/' + id)
         .then((res) => {
             const { data, total } = res.data? res.data : {};
-            console.log(data);
             dispatch({ type: 'VIEW_DEPARTMENT', payload: data ? data : [], total: total ? total : 0 })
         })
         .catch((err) => {

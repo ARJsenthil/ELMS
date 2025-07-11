@@ -1,15 +1,17 @@
 const { pool } = require("../../config/db");
 const { Capitalize } = require("../../utilities/helperFunction");
+const bcrypt = require('bcrypt');
 
 class Employee {
 
-    create(req, res) {
+    async create(req, res) {
         try {
-            const { email, password_hash, gender, dob, dept_id, country, city_town, address, ph_no } = req.body;
+            const { email, gender, dob, dept_id, country, city_town, address, ph_no } = req.body;
             const firstname = Capitalize(req.body.firstname);
             const lastname = Capitalize(req.body.lastname);
-            const employeeData = [ firstname, lastname, email, password_hash, gender, dob, dept_id, country, city_town, address, ph_no ];
-
+            const password = await bcrypt.hash(req.body.password, 5);
+            const employeeData = [ firstname, lastname, email, password, gender, dob, dept_id, country, city_town, address, ph_no ];
+            console.log(employeeData);
             pool.query("insert into employee ( firstname, lastname, email, password_hash, gender, dob, dept_id, country, city_town, address, ph_no ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", employeeData, (err, result) => {
                 if(err) {
                     return res.status(409).json({ status: 0, message: "Server Error", error: err });

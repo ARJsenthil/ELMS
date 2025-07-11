@@ -7,7 +7,7 @@ import { API } from "../../../../common/api";
 
 const ChangePassword = (props) => {
 
-    const { type, password } = props.user;
+    const { type } = props.user;
 
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -65,13 +65,6 @@ const ChangePassword = (props) => {
             valid = false;
             if(!focusField) focusField = 'currentPassword';
         }
-        else if(newData.currentPassword !== password) {
-            checkErrors['currentPasswordMatch'] = true;
-            newData['currentPassword'] = '';
-            valid = false;
-            if(!focusField) focusField = 'currentPassword';
-            setAlert({ type: "warning", message: "Incorrect Password", open: true });
-        }
 
         if(!newData.newPassword) {
             checkErrors['newPassword'] = true;
@@ -94,7 +87,6 @@ const ChangePassword = (props) => {
         
         if(focusField) {
             inputRef.current[focusField].focus()
-            console.log(focusField)
         }
 
         setErrors({...checkErrors});
@@ -161,7 +153,7 @@ const ChangePassword = (props) => {
                     inputRef={(el) => inputRef.current.confirmPassword = (el)}  
                 />
 
-                <Button variant="contained" onClick={onsubmit}>Contained</Button>
+                <Button variant="contained" onClick={onsubmit}>Change</Button>
             </Stack>
         </>
     )

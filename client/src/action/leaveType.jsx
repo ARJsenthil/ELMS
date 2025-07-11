@@ -6,7 +6,6 @@ export const listLeaveType = () => {
         axios.get(API.leaveType)
         .then((res) => {
             const { data, total } = res.data? res.data : {};
-            console.log(data);
             dispatch({ type: 'LIST_LEAVE_TYPE', payload: data ? data : [], total: total ? total : 0 })
         })
         .catch((err) => {
@@ -29,7 +28,6 @@ export const viewLeaveType = (id = '') => {
 }
 
 export const handleInputChangeLeaveType = (name, value) => {
-    console.log(name+'---'+value)
     return function (dispatch) {
         dispatch({ type: 'HANDLE_INPUT_CHANGE_LEAVE_TYPE', name: name, value: value })
     }

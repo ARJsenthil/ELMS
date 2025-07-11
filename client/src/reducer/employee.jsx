@@ -14,7 +14,6 @@ const employeeReducer = ( state = initialState, action ) => {
                 total: action.total,
             }
         case 'VIEW_EMPLOYEE':
-            console.log('-->'+action.payload);
             return {
                 ...state,
                 employee: action.payload,

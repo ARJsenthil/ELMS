@@ -13,7 +13,6 @@ const AddAndEditEmployee = (props) => {
     const storeData = useSelector( state => state );
     const data = storeData.employee.employee;
 
-    console.log(props)
     const {model, user, router} = props;
     const [errors, setErrors] = useState({
         
@@ -28,7 +27,7 @@ const AddAndEditEmployee = (props) => {
         gender:null,
         dob:null,
         dept_id:null,
-        country:null,
+        country:null, 
         city_town:null,
         address:null,
         ph_no:null,
@@ -41,8 +40,8 @@ const AddAndEditEmployee = (props) => {
     const numberRegex = /^\d*$/;
     const [loading, setLoading] = useState(true);
 
-    const idData = JSON.parse(localStorage.getItem('managementId'));
-    const id = idData.name == 'employee'? idData.id: ( model == "edit" && router.navigate('/employee/listEmployee', { replace: true }));
+    const idData = JSON.parse(localStorage.getItem('managementId')) || JSON.parse(localStorage.getItem('loginSession')).user || "";
+    const id = idData.name == 'employee' || idData.type == 'employee' ? idData.id: ( model == "edit" && router.navigate('/employee/listEmployee', { replace: true }));
     useEffect(() => {
         listDepartment()(dispatch)
         if(model === 'edit') {
@@ -52,12 +51,10 @@ const AddAndEditEmployee = (props) => {
             resetEmployee()(dispatch);
         }
     }, [dispatch])
-console.log(data)
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const onchange = ({name, value}) => {
-        console.log(value);
         var checkfield = [ 'firstname', 'lastname', 'password', 'gender', 'dob', 'dept_id', 'country', 'city_town', 'address' ]
             if(checkfield.includes(name)) {
                 setErrors({ ...errors, [name]: false });
@@ -109,13 +106,11 @@ console.log(data)
         
         if(focusField) {
             inputRef.current[focusField].focus();
-            console.log(focusField)
         }
         setErrors({ ...checkError })
         
         const formdata = new FormData();
         // newData.forEach(element => {
-            // console.log(element)
         // });
 
         if(valid) {

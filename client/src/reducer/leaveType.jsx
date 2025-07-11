@@ -8,7 +8,6 @@ const initialState = {
 const leaveTypeReducer = ( state = initialState, action ) => {
     switch (action.type) {
         case 'LIST_LEAVE_TYPE':
-            console.log(action)
             return {
                 ...state,
                 listLeaveType: action.payload,
@@ -20,7 +19,6 @@ const leaveTypeReducer = ( state = initialState, action ) => {
                 leaveType: action.payload,
             }
         case 'HANDLE_INPUT_CHANGE_LEAVE_TYPE':
-            console.log(action)
             return {
                 ...state,
                 leaveType: {

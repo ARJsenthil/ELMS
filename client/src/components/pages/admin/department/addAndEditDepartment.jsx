@@ -12,7 +12,6 @@ const AddAndEditDepartment = (props) => {
     const dispatch = useDispatch();
     const storeData = useSelector( state => state.department );
     const data = storeData.department;
-    console.log(data);
     const { model } = props;
     const [deptCodeError, setDeptCodeError] = useState(false);
     const [deptNameError, setDeptNameError] = useState(false);
@@ -32,7 +31,6 @@ const AddAndEditDepartment = (props) => {
             resetDepartment()(dispatch);            
         }
     }, [dispatch])
-    console.log(id);
 
     const onchange = ({name, value}) => {
         if(name === 'dept_code') {
@@ -77,7 +75,6 @@ const AddAndEditDepartment = (props) => {
         
         if(focusField) {
             focusField.current.focus()
-            console.log(focusField)
         }
         
         const tempData = [ {name: 'a'}, {name: 'a'}, {name: 'a'} ];

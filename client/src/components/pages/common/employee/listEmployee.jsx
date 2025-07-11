@@ -6,7 +6,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
+import TablePagination from '@mui/material/TablePagination'; 
 import TableRow from '@mui/material/TableRow';
 import { Button, Link } from "@mui/material";
 import { listEmployee } from "../../../../action/employee";
@@ -48,7 +48,6 @@ const [alert, setAlert] = React.useState({ type: null, message: "", open: false 
 const storeData = useSelector( state => state );
 const data = storeData.employee.listEmployee;
 const departmentData = storeData.department.listDepartment;
-console.log(storeData);
 
 React.useEffect(() => {
   fetchData(dispatch);
@@ -87,18 +86,17 @@ const rows = data.map(element =>
         findDepartment(departmentData, element.dept_id), 
         element.ph_no, 
         <>
-          <Button /**onClick={() => changeStatus(element.id)}*/>{element.empStatus? "Active": "InActive"}</Button>
+          <Button /**onClick={() => changeStatus(element.id)}*/>{element.status}</Button>
         </>,
         <>
           <Button onClick={() => editData(element.id)}>Edit</Button> 
-          {/* <Button onClick={() => deleteData(element.id)}>Delete</Button> */}
+          {/* < onClick={() => deleteData(element.id)}>Delete</Button> */}
         </>
     )
 );
 
   const editData = (itemID) => {
     router.data = { ...router.data, id: itemID }
-    console.log(router)
     localStorage.setItem("managementId", JSON.stringify({ "id": itemID, "name": "employee"}));
     router.navigate(`/employee/editEmployee`, { replace: true });
   }

@@ -25,6 +25,6 @@ app.use(cors());
 
 require('./routes')(app);
 
-app.listen(process.env.PORT || 4000, () => {
+app.listen(process.env.PORT || 4000, 'localhost', () => {
     console.log('Server ON')
 })
