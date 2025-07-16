@@ -13,7 +13,7 @@ import Login from "../pages/login";
 
 export const RoutesData = (props) => {
 
-    const { session, router } = props;
+    const { session, router, setSession } = props;
     const user = session ? session.user.type : null;
 
     const routes = {
@@ -58,7 +58,7 @@ export const RoutesData = (props) => {
     const employeeRoutes = ["/changePassword","/employee","/leaveType/listLeaveType","/leaveManagement/listLeave","/leave","/leave/leaveHistory","/myProfile"];
     const routesData = {};
     if(!user) {
-        routesData["/login"] = <Login router={router} />
+        routesData["/login"] = <Login router={router} setSession={setSession} />
     }
     else if(user === 'admin') {
         adminRoutes.forEach(element => {

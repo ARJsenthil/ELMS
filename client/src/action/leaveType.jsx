@@ -1,9 +1,13 @@
 import { API } from "../common/api";
-import axios from "axios"
+import axios from '../utilities/axiosInstance'
 
 export const listLeaveType = () => {
     return function (dispatch) {
-        axios.get(API.leaveType)
+        axios.get(API.leaveType, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'LIST_LEAVE_TYPE', payload: data ? data : [], total: total ? total : 0 })
@@ -16,7 +20,11 @@ export const listLeaveType = () => {
 
 export const viewLeaveType = (id = '') => {
     return function (dispatch) {
-        axios.get(API.leaveType + '/' + id)
+        axios.get(API.leaveType + '/' + id, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'VIEW_LEAVE_TYPE', payload: data ? data : [], total: total ? total : 0 })

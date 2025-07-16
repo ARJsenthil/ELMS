@@ -4,9 +4,11 @@ import departmentReducer from './department';
 import employeeReducer from './employee';
 import leaveReducer from './leave';
 import leaveTypeReducer from './leaveType';
+import authReducer from './auth';
 
 const rootReducer = combineReducers({
 
+    auth: authReducer,
     dashboard: dashboardReducer,
     department: departmentReducer,
     employee: employeeReducer,

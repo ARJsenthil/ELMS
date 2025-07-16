@@ -1,30 +1,30 @@
 
-// const ROOTURL = 'http://localhost:4000/api/v1';
-const ROOTURL = 'https://elms-otvr.onrender.com/api/v1';
+const ROOTURL = 'http://localhost:4000/api/v1';
+// const ROOTURL = 'https://elms-otvr.onrender.com//api/v1';
 
 
 export const API = {
 
     BASE_URL: ROOTURL,
-    login: ROOTURL + '/auth/login',
+    login: '/auth/login',
     
-    totalEmployee: ROOTURL + '/employee/totalEmployee',
-    totalDepartment: ROOTURL + '/department/totalDepartment',
-    totalLeaveType: ROOTURL + '/leaveType/totalLeaveType',
+    totalEmployee: '/employee/totalEmployee',
+    totalDepartment: '/department/totalDepartment',
+    totalLeaveType: '/leaveType/totalLeaveType',
     
     // Employee
-    employee: ROOTURL + '/employee/',
+    employee: '/employee/',
 
     // Department
-    department: ROOTURL + '/department/',
+    department: '/department/',
 
     // LeaveType
-    leaveType: ROOTURL + '/leaveType/',
+    leaveType: '/leaveType/',
 
     // Leave
-    leave: ROOTURL + '/leave/',
-    listLeaveByStatus: ROOTURL + '/leave/listLeaveByStatus',
+    leave: '/leave/',
+    listLeaveByStatus: '/leave/listLeaveByStatus',
 
 
-    deleteItem: ROOTURL + '/delete/deleteData',
+    deleteItem: '/delete/deleteData',
 }

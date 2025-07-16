@@ -1,9 +1,13 @@
 import { API } from "../common/api";
-import axios from "axios"
+import axios from '../utilities/axiosInstance'
 
 export const listEmployee = () => {
     return function (dispatch) {
-        axios.get(API.employee)
+        axios.get(API.employee, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'LIST_EMPLOYEE', payload: data ? data : [], total: total ? total : 0 })
@@ -16,7 +20,11 @@ export const listEmployee = () => {
 
 export const viewEmployee = (id = '') => {
     return function (dispatch) {
-        axios.get(API.employee + id)
+        axios.get(API.employee + id, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'VIEW_EMPLOYEE', payload: data ? data : [], total: total ? total : 0 })

@@ -1,16 +1,20 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Button, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, TextField } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import axios from 'axios';
+import axios from '../../utilities/axiosInstance';
 import { API } from '../../common/api';
 import { AlertBox } from '../../utilities/alerts/alert';
 import { useRef, useState } from 'react';
+import { addUserDetails } from '../../action/auth';
+import { useDispatch } from 'react-redux';
 
 const Login = (props) => {
-
-    const { router } = props;
+    const dispatch = useDispatch();
+    const { router, setSession } = props;
     const [alignment, setAlignment] = useState('admin');
+    const [loading, setLoading] = useState(false);
     const handleChange = (event, newAlignment) => {
         if (newAlignment)
             setAlignment(newAlignment);
@@ -57,7 +61,7 @@ const Login = (props) => {
             valid = false;
             if (!focusField) focusField = passwordInputRef;
         }
-
+        
 
         if (focusField) {
             focusField.current.focus()
@@ -65,20 +69,27 @@ const Login = (props) => {
 
         const formdata = { ph_no, password, type: alignment };
         if (valid) {
-            const axiosCall = axios.post(API.login, formdata);
-
-            axiosCall
-                .then((res) => {
-                    const userData = res.data.data.data;
-                    localStorage.setItem('loginSession', JSON.stringify(userData));
-                    setAlert({ type: "success", message: "Success", open: true });
-                    window.location.reload();
-                    router.navigate("/", { replace: true });
-                })
-                .catch((err) => {
-                    setAlert({ type: "warning", message: "Try Again Later", open: true });
-
-                })
+            setLoading(true);
+            axios.post(API.login, formdata)
+            .then((res) => {
+                const userData = res.data.data.data;
+                const token = res.data.data.token;
+                setSession({ user: userData});
+                addUserDetails(userData)(dispatch);
+                localStorage.setItem('loginSession', JSON.stringify(userData));
+                localStorage.setItem('token', token);
+                setAlert({ type: "success", message: "Success", open: true });
+                router.navigate("/", { replace: true });
+            })
+            .catch((err) => {
+                console.log("a");
+                setAlert({ type: "warning", message: "Try Again Later", open: true });
+                
+            })
+            .finally(() => {
+                setLoading(false);
+                // window.location.reload();
+            });
         }
     }
     const handleAlertClose = () => {
@@ -143,7 +154,9 @@ const Login = (props) => {
                     />
                     {passwordError && <FormHelperText>Password is required</FormHelperText>}
                 </FormControl>
-            <Button variant="contained" onClick={onsubmit}>login</Button>
+            <Button variant="contained" onClick={onsubmit}>
+                {loading? <CircularProgress size="27px" color="inherit" />: "login"}
+            </Button>
             </Stack>
         </>
     )

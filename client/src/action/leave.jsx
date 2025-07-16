@@ -1,9 +1,13 @@
 import { API } from "../common/api";
-import axios from "axios"
+import axios from '../utilities/axiosInstance'
 
 export const listLeave = () => {
     return function (dispatch) {
-        axios.get(API.leave)
+        axios.get(API.leave, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'LIST_LEAVE', payload: data ? data : [], total: total ? total : 0 })
@@ -29,7 +33,11 @@ export const listLeaveByStatus = (leaveStatus) => {
 
 export const viewLeave = (id = '') => {
     return function (dispatch) {
-        axios.get(API.leave + '/' + id)
+        axios.get(API.leave + '/' + id, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'VIEW_LEAVE', payload: data ? data : [], total: total ? total : 0 })

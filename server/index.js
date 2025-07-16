@@ -2,12 +2,19 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const pool = require('./config/db');
 
 
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 const testConnection = async () => {
     try {
@@ -18,10 +25,10 @@ const testConnection = async () => {
     }
 }
 testConnection();
+
 app.get('/', (req, res) => {
-  res.send('Server is running!');
+    res.send('Server is running!');
 });
-app.use(cors());
 
 require('./routes')(app);
 

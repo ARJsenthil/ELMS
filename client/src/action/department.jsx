@@ -1,9 +1,13 @@
 import { API } from "../common/api";
-import axios from "axios"
+import axios from '../utilities/axiosInstance'
 
 export function listDepartment () {
     return function (dispatch) {
-        axios.get(API.department)
+        axios.get(API.department, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'LIST_DEPARTMENT', payload: data ? data : [], total: total ? total : 0 })
@@ -16,7 +20,11 @@ export function listDepartment () {
 
 export function viewDepartment (id = '') {
     return function (dispatch) {
-        axios.get(API.department + '/' + id)
+        axios.get(API.department + '/' + id, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then((res) => {
             const { data, total } = res.data? res.data : {};
             dispatch({ type: 'VIEW_DEPARTMENT', payload: data ? data : [], total: total ? total : 0 })

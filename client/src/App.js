@@ -9,6 +9,8 @@ import { ContactSupportOutlined, WindowSharp } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 import { useState } from 'react';
 import { PageNotFound } from './components/authentications/pageNotFound';
+import axios from './utilities/axiosInstance';
+import { useDispatch, useSelector } from 'react-redux';
 
 function useDemoRouter(initialPath) {
   const [pathname, setPathname] = React.useState(() => {
@@ -48,6 +50,10 @@ function useDemoRouter(initialPath) {
 }
 
 export default function App(props) {
+  const dispatch = useDispatch();
+  const store = useSelector(state => state);
+  const userData = store.auth.user;
+  console.log(store.auth);
   const [session, setSession] = React.useState(
     JSON.parse(localStorage.getItem('loginSession')) ?
       {
@@ -72,6 +78,7 @@ export default function App(props) {
         // });
       },
       signOut: () => {
+        axios.post("/auth/logout");
         setSession(null);
         localStorage.removeItem('loginSession');
         router.navigate('/login');
@@ -82,7 +89,7 @@ export default function App(props) {
 
   const router = useDemoRouter(initialPath);
   console.log(session);
-  const ROUTE_COMPONENTS = RoutesData({ session: session, router: router });
+  const ROUTE_COMPONENTS = RoutesData({ session, setSession, router });
   console.log(ROUTE_COMPONENTS);
   const NAVIGATION_DATA = !session ? NAVIGATION.login : (session.user.type === 'admin' ? NAVIGATION.admin : NAVIGATION.employee);
   function DemoPageContent({ pathname }) {
@@ -103,12 +110,17 @@ export default function App(props) {
       </>
     );
   }
-  return (
+  const BRANDING = {
+    title: 'ELMS',
+    logo: ""
+  };
+return (
     <AppProvider
       navigation={NAVIGATION_DATA}
       router={router}
       session={session}
-      authentication={authentication}
+      authentication={authentication}       
+      branding={BRANDING}
     // theme={demoTheme}
     // window={demoWindow}
     >

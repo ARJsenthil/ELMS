@@ -1,9 +1,13 @@
 import { API } from "../common/api";
-import axios from "axios"
+import axios from '../utilities/axiosInstance'
 
 export function totalCount() {
     return function (dispatch) {
-        return axios.get(API.BASE_URL+"/dashboard/totalCount")
+        return axios.get(API.BASE_URL+"/dashboard/totalCount", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then((res) => {
             dispatch({ type: 'TOTAL_COUNT', total: res.data.data || 0 });
         })
@@ -14,7 +18,11 @@ export function totalCount() {
 }
 export function totalDepartment () {
     return function (dispatch) {
-        return axios.get(API.totalDepartment)
+        return axios.get(API.totalDepartment, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then((res) => {
             const { total } = res.data? res.data : {};
             dispatch({ type: 'TOTAL_DEPARTMENT', total: total ? total : 0 })
