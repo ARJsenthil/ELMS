@@ -8,7 +8,7 @@ const pool = require('./config/db');
 
 
 app.use(cors({
-    origin: 'https://elms-six.vercel.app/',
+    origin: 'https://elms-six.vercel.app',
     credentials: true,
 }));
 
