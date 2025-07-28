@@ -52,8 +52,7 @@ class Auth {
     async refresh(req, res) {
         console.log(req.cookies.refreshToken);
         const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) return res.status(401).json({ message: "No refresh token" });
-
+        if (!refreshToken) return res.status(403).json({ message: "No refresh token" });
         jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN, (err, user) => {
             if (err) return res.status(403).json({ message: "Invalid refresh token" });
 

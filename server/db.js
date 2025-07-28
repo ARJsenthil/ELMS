@@ -1,15 +1,15 @@
 const mysql = require('mysql2');
 const fs = require('fs');
 
-// Read the SQL file
-const sql = fs.readFileSync("C:/Users/CT-DELL/Downloads/elms-db.sql", "utf8");
+// Read SQL file
+const sql = fs.readFileSync("elms-db.sql", "utf8");
 
-// Create MySQL connection
+// Replace these with real values from Railway Connect tab
 const connection = mysql.createConnection({
-  host: 'mysql-v0zd.railway.internal',
+  host: 'mysql.railway.internal',   // Replace with actual host
   port: 3306,
   user: 'root',
-  password: 'OiemipFzLemOOMUVEfjfdpXyviMBikha',
+  password: 'EzuUzkYnxTgLlHbzUNeLYHAQeRKeTVST',
   database: 'railway',
   multipleStatements: true
 });
@@ -17,7 +17,7 @@ const connection = mysql.createConnection({
 // Execute SQL
 connection.query(sql, (err, results) => {
   if (err) {
-    console.error('❌ Error:', err);
+    console.error('❌ SQL execution error:', err.sqlMessage || err.message);
   } else {
     console.log('✅ SQL file imported successfully!');
   }

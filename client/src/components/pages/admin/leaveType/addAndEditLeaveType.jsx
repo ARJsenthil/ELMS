@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from '../../../../utilities/axiosInstance';
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { API } from "../../../../common/api";

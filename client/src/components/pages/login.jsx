@@ -122,11 +122,6 @@ const Login = (props) => {
                     label="Phone Number"
                     value={ph_no || ''}
                     name="ph_no"
-                    slotProps={{
-                        input: {
-                            startAdornment: <InputAdornment position="start">@</InputAdornment>,
-                        },
-                    }}
                     helperText={ph_noError && 'Phone Number is required'}
                     inputRef={ph_noInputRef}
                 />

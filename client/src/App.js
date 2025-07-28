@@ -4,13 +4,9 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import { NAVIGATION } from './components/shared/navigation';
 import { RoutesData } from './components/shared/routes';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ContactSupportOutlined, WindowSharp } from '@mui/icons-material';
-import { Box, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Box } from '@mui/material';
 import { PageNotFound } from './components/authentications/pageNotFound';
 import axios from './utilities/axiosInstance';
-import { useDispatch, useSelector } from 'react-redux';
 
 function useDemoRouter(initialPath) {
   const [pathname, setPathname] = React.useState(() => {
@@ -29,7 +25,6 @@ function useDemoRouter(initialPath) {
     };
   }, []);
 
-  // Navigate function to update path
   const navigate = (path, { replace = false } = {}) => {
     setPathname(path);
     if (replace) {
@@ -50,10 +45,7 @@ function useDemoRouter(initialPath) {
 }
 
 export default function App(props) {
-  const dispatch = useDispatch();
-  const store = useSelector(state => state);
-  const userData = store.auth.user;
-  console.log(store.auth);
+
   const [session, setSession] = React.useState(
     JSON.parse(localStorage.getItem('loginSession')) ?
       {
@@ -65,23 +57,13 @@ export default function App(props) {
   const authentication = React.useMemo(() => {
     return {
       signIn: () => {
-        setSession(null);
-        // setSession({
-        //   user: {
-        //     id: 'admin',
-        //     type: 'employee',
-        //     name: 'Bharat Kashyap',
-        //     password: 'Bharat Kashyap',
-        //     email: 'bharatkashyap@outlook.com',
-        //     image: 'https://avatars.githubusercontent.com/u/19550456',
-        //   },
-        // });
+        // setSession(null);
       },
       signOut: () => {
         axios.post("/auth/logout");
-        setSession(null);
         localStorage.removeItem('loginSession');
-        router.navigate('/login');
+        localStorage.removeItem('token');
+        setSession(null);
       },
     };
   }, []);
@@ -114,12 +96,12 @@ export default function App(props) {
     title: 'ELMS',
     logo: ""
   };
-return (
+  return (
     <AppProvider
       navigation={NAVIGATION_DATA}
       router={router}
       session={session}
-      authentication={authentication}       
+      authentication={authentication}
       branding={BRANDING}
     // theme={demoTheme}
     // window={demoWindow}
