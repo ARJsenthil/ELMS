@@ -21,15 +21,27 @@ instance.interceptors.response.use(
                 originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                 return instance(originalRequest);
             } catch (refreshErr) {
+                console.log("23");
                 if (refreshErr.response?.status === 403) {
                     axios.post("/auth/logout");
                     localStorage.removeItem('token');
                     localStorage.removeItem("loginSession");
                     window.location.href = '/login';
                 }
+                else if (refreshErr.response?.status === 503) {
+                    console.log(refreshErr.response?.data.message);
+                    alert("DB :(")
+                }
                 // window.location.href = '/login';
                 return Promise.reject(refreshErr);
             }
+        }
+        else if (err.response && err.response.status === 503) {
+            alert(`⚠️ Oops! My Database Took a Coffee Break ☕
+Looks like my DB host said, “No money, no data!” and went on vacation because the hosting plan expired.
+If you're a recruiter checking out my site — don’t worry, the code still works… the database is just sleeping until I can afford to wake it up.
+Hire me, and I promise the first thing I’ll do (after thanking you) is revive the database from its nap! 😅
+Appreciate your understanding — and your job offer 👀💼`);
         }
 
         return Promise.reject(err);

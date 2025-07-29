@@ -14,6 +14,9 @@ class Department {
                     if(err.sqlState === '23000') {
                         return res.status(409).json({ status: 0, message: 'Duplicate Entry', error: err });
                     }
+                    else if (err.code == "ECONNREFUSED") {
+                        res.status(503).json({ status: 0, message: "ECONNREFUSED" });
+                    }
                     else {
                         return res.status(409).json({ status: 0, message: 'Server Error', error: err });
                     }
@@ -30,9 +33,14 @@ class Department {
     async getAll(req, res) {
         try {
             pool.query('select * from department', async (err, result) => {
-               if(err) {
-                   return res.status(400).json({ status: 0, message: 'server error', error: err });
-               }
+               if (err) {
+                    if (err.code == "ECONNREFUSED") {
+                        res.status(503).json({ status: 0, message: "ECONNREFUSED" });
+                    }
+                    else {
+                        res.status(400).json({ status: 0, message: "Server Error" });
+                    }
+                }
                else {
                    return res.status(200).json({ status: 1, message: 'Departments retrived successfully', data: result });
                }
@@ -46,8 +54,13 @@ class Department {
         try {
             const { id } = req.params;
              pool.query('select * from department where id=?', [id], (err, result) => {
-                if(err) {
-                    return res.status(400).json({ status: 0, message: 'server error', error: err });
+                if (err) {
+                    if (err.code == "ECONNREFUSED") {
+                        res.status(503).json({ status: 0, message: "ECONNREFUSED" });
+                    }
+                    else {
+                        res.status(400).json({ status: 0, message: "Server Error" });
+                    }
                 }
                 else {
                     return res.status(200).json({ status: 1, message: 'Department Retrived Successfully', data: result[0] });

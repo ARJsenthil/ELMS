@@ -18,7 +18,12 @@ class Dashboard {
             ])
             res.status(200).json({ status: 1, data: { departmentCount, leaveTypeCount, employeeCount }, message: "Success" });
         } catch (err) {
-            res.status(500).json({ status: 0, message: "Server Error" });
+            if(err.code == "ECONNREFUSED") {
+                res.status(503).json({ status: 0, message: "ECONNREFUSED" });
+            }
+            else {
+                res.status(500).json({ status: 0, message: "Server Error" });
+            }
         }
     }
 }

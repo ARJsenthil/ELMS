@@ -12,7 +12,10 @@ class Auth {
             console.log(req.body);
             pool.query(`select * from ${type} where ph_no = ?`, ph_no, async (err, result) => {
                 if (err) {
-                    return res.status(409).json({ status: 0, message: "Try Again Later", error: err });
+                    if (err.code == "ECONNREFUSED") {
+                        res.status(503).json({ status: 0, message: "ECONNREFUSED" });
+                    }
+                    else return res.status(409).json({ status: 0, message: "Try Again Later", error: err });
                 }
                 else {
                     if (result.length > 0) {
@@ -45,7 +48,7 @@ class Auth {
                 }
             })
         } catch (err) {
-
+            res.status(500).json({ status: 0, message: "Server Error" });
         }
     }
 
@@ -75,14 +78,17 @@ class Auth {
             console.log(password_hash);
             pool.query("insert into user_data (ph_no, email, password) values (?, ?, ?)", [ph_no, email, password_hash], (err, result) => {
                 if (err) {
-                    return res.status(409).json({ status: 0, message: "Registeration Failed Try Again Later", error: err });
+                    if (err.code == "ECONNREFUSED") {
+                        res.status(503).json({ status: 0, message: "ECONNREFUSED" });
+                    }
+                    else return res.status(409).json({ status: 0, message: "Registeration Failed Try Again Later", error: err });
                 }
                 else {
                     return res.status(200).json({ status: 1, message: "User Created Successfully" });
                 }
             })
         } catch (err) {
-            return res.status(500).json({ status: 0, message: "Server Error", error: err });
+            res.status(500).json({ status: 0, message: "Server Error" });
         }
     }
 }

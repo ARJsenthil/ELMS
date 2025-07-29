@@ -3,7 +3,7 @@ import axios from '../utilities/axiosInstance'
 
 export function totalCount() {
     return function (dispatch) {
-        return axios.get(API.BASE_URL+"/dashboard/totalCount", {
+        return axios.get("/dashboard/totalCount", {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
