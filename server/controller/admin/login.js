@@ -10,7 +10,7 @@ router.post('/login', async (req, res) => {
         console.log(req.body);
         pool.query(`SELECT * FROM ${type} WHERE username = ? and password = ?`, [username, password], async (err, result) => {
             if (err) {
-                if (err.code == "ECONNREFUSED") {
+                if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                     res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                 }
                 else return res.status(400).json({ status: 0, message: 'server error' });

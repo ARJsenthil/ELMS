@@ -7,7 +7,7 @@ Router.delete('/deleteData/:id', async (req, res) => {
         const { model } = req.body;
         pool.query(`delete * from ${model} where id = ${id}`, (err, result) => {
             if (err) {
-                if (err.code == "ECONNREFUSED") {
+                if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                     res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                 }
                 else res.status(400).json({ status: 0, message: 'server error', error: err });

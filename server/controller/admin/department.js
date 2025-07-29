@@ -14,7 +14,7 @@ class Department {
                     if(err.sqlState === '23000') {
                         return res.status(409).json({ status: 0, message: 'Duplicate Entry', error: err });
                     }
-                    else if (err.code == "ECONNREFUSED") {
+                    else if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else {
@@ -34,7 +34,7 @@ class Department {
         try {
             pool.query('select * from department', async (err, result) => {
                if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else {
@@ -55,7 +55,7 @@ class Department {
             const { id } = req.params;
              pool.query('select * from department where id=?', [id], (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else {

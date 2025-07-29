@@ -11,7 +11,7 @@ class LeaveType {
                     if (err.sqlState === '23000') {
                         return res.status(409).json({ status: 0, message: 'Duplicate Entry', error: err });
                     }
-                    else if (err.code == "ECONNREFUSED") {
+                    else if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(400).json({ status: 0, message: 'Server Error', error: err });
@@ -29,7 +29,7 @@ class LeaveType {
         try {
             pool.query('select * from leave_type', async (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(400).json({ status: 0, message: 'server error', error: err });
@@ -48,7 +48,7 @@ class LeaveType {
             const { id } = req.params;
             pool.query('select * from leave_type where id=?', [id], (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(400).json({ status: 0, message: 'server error', error: err });
@@ -72,7 +72,7 @@ class LeaveType {
                     if (err.sqlState === '23000') {
                         return res.status(409).json({ status: 0, message: 'Duplicate Entry', error: err });
                     }
-                    else if (err.code == "ECONNREFUSED") {
+                    else if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(409).json({ status: 0, message: 'Server Error', error: err });

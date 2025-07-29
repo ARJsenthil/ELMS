@@ -12,7 +12,7 @@ class Auth {
             console.log(req.body);
             pool.query(`select * from ${type} where ph_no = ?`, ph_no, async (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(409).json({ status: 0, message: "Try Again Later", error: err });

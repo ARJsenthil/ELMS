@@ -14,7 +14,7 @@ class Employee {
             console.log(employeeData);
             pool.query("insert into employee ( firstname, lastname, email, password_hash, gender, dob, dept_id, country, city_town, address, ph_no ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", employeeData, (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(409).json({ status: 0, message: "Server Error", error: err });
@@ -33,7 +33,7 @@ class Employee {
         try {
             pool.query("select * from employee", (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(409).json({ status: 0, message: "Server Error", error: err });
@@ -54,7 +54,7 @@ class Employee {
             const { id } = req.params;
             pool.query("select * from employee where id = ?", id, (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(409).json({ status: 0, message: "Server Error", error: err });
@@ -78,7 +78,7 @@ class Employee {
             console.log(ph_no);
             pool.query("update employee set firstname = ?, lastname = ?, email = ?, gender = ?, dob = ?, dept_id = ?, country = ?, city_town = ?, address = ?, ph_no = ? where id = ?", [firstname, lastname, email, gender, dob, dept_id, country, city_town, address, ph_no, id], (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(409).json({ status: 0, message: "Server Error", error: err });

@@ -8,7 +8,7 @@ class LeaveRequest {
             const { from_date, to_date, leave_type, description, emp_code, leave_status } = req.body;
             pool.query('insert into leave_request ( from_date, to_date, leave_type, description, emp_code ) values ( ?, ?, ?, ?, ? )', [from_date, to_date, leave_type, description, emp_code, leave_status], (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(400).json({ status: 0, message: 'Server Error' });
@@ -26,7 +26,7 @@ class LeaveRequest {
         try {
             pool.query("select * from leave_request", (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(409).json({ status: 0, message: "Server Error", error: err });
@@ -45,7 +45,7 @@ class LeaveRequest {
             const { id } = req.params;
             pool.query("select * from leave_request where id = ?", id, (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(409).json({ status: 0, message: "Server Error", error: err });
@@ -65,7 +65,7 @@ class LeaveRequest {
             const { from_date, to_date, leave_type, description, emp_code, leave_status } = req.body;
             pool.query("update leave_request set from_date = ?, to_date = ?, leave_type = ?, description = ?, emp_code = ?, leave_status = ? where id = ?", [from_date, to_date, leave_type, description, emp_code, leave_status, id], (err, result) => {
                 if (err) {
-                    if (err.code == "ECONNREFUSED") {
+                    if (err.code == "ECONNREFUSED" || "PROTOCOL_CONNECTION_LOST") {
                         res.status(503).json({ status: 0, message: "ECONNREFUSED" });
                     }
                     else return res.status(409).json({ status: 0, message: "Server Error", error: err });
